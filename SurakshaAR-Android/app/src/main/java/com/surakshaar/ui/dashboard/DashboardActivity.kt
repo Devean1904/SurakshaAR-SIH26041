@@ -250,7 +250,7 @@ class DashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to launch training for $domain", e)
-                        Toast.makeText(this, "Could not start training: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -268,7 +268,7 @@ class DashboardActivity : AppCompatActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to launch resume training", e)
-                    Toast.makeText(this, "Could not start training: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -276,7 +276,7 @@ class DashboardActivity : AppCompatActivity() {
                 try {
                     startActivity(Intent(this, CertificateActivity::class.java))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open certificates: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -289,7 +289,7 @@ class DashboardActivity : AppCompatActivity() {
                     startActivity(Intent(this, SettingsActivity::class.java))
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to launch settings", e)
-                    Toast.makeText(this, "Could not open settings: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
@@ -404,28 +404,28 @@ class DashboardActivity : AppCompatActivity() {
                 try {
                     startActivity(Intent(this, AdminActivity::class.java).putExtra("tab", "workers"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open workers: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             val openManagers = View.OnClickListener {
                 try {
                     startActivity(Intent(this, AdminActivity::class.java).putExtra("tab", "managers"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open managers: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             val openReports = View.OnClickListener {
                 try {
                     startActivity(Intent(this, AdminActivity::class.java).putExtra("tab", "analytics"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open reports", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             val openSiteMapping = View.OnClickListener {
                 try {
                     startActivity(Intent(this, SiteMapActivity::class.java))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open site mapping", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -522,7 +522,7 @@ class DashboardActivity : AppCompatActivity() {
                 if (response.isSuccessful && body != null && body.valid) {
                     val message = buildString {
                         appendLine(LanguageManager.get("qr_valid"))
-                        appendLine("ID: ${body.certificateId}")
+                        appendLine("${LanguageManager.get("id_label")}: ${body.certificateId}")
                         appendLine("${body.employeeName} — ${body.moduleName}")
                         append("${LanguageManager.get("assess_total")} ${body.score}")
                     }
@@ -557,7 +557,9 @@ class DashboardActivity : AppCompatActivity() {
                     val workers = response.body() ?: emptyList()
                     val pending = workers.count { it.awaitingAdminConfirmation }
                     val active = workers.count { it.isActive }
-                    val msg = "Workers: $active active, $pending pending admin confirmation"
+                    val msg = LanguageManager.get("workers_status_line")
+                        .replace("%1\$d", active.toString())
+                        .replace("%2\$d", pending.toString())
                     Toast.makeText(this@DashboardActivity, msg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
@@ -574,7 +576,8 @@ class DashboardActivity : AppCompatActivity() {
                 val response = ApiClient.api.getAdminSites(token)
                 if (response.isSuccessful) {
                     val sites = response.body() ?: emptyList()
-                    Toast.makeText(this@DashboardActivity, "Sites loaded: ${sites.size}", Toast.LENGTH_SHORT).show()
+                    val msg = LanguageManager.get("sites_loaded").replace("%1\$d", sites.size.toString())
+                    Toast.makeText(this@DashboardActivity, msg, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DashboardActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
@@ -589,7 +592,8 @@ class DashboardActivity : AppCompatActivity() {
                 val response = ApiClient.api.getManagerEscalations(token)
                 if (response.isSuccessful) {
                     val escalations = response.body() ?: emptyList()
-                    Toast.makeText(this@DashboardActivity, "Escalations: ${escalations.size}", Toast.LENGTH_SHORT).show()
+                    val msg = LanguageManager.get("escalations_loaded").replace("%1\$d", escalations.size.toString())
+                    Toast.makeText(this@DashboardActivity, msg, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DashboardActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()

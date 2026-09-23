@@ -54,6 +54,7 @@ class ManagerActivity : AppCompatActivity() {
 
         backButton.setOnClickListener { finish() }
         titleText.text = LanguageManager.get("manager_panel")
+        applyTabTranslations()
 
         val initialTab = when (intent.getStringExtra("tab")) {
             "add_worker", "addWorker" -> "addWorker"
@@ -66,6 +67,20 @@ class ManagerActivity : AppCompatActivity() {
         tabAddWorker.setOnClickListener { selectTab("addWorker") }
         tabAssignTraining.setOnClickListener { selectTab("assignTraining") }
         tabProgress.setOnClickListener { selectTab("progress") }
+    }
+
+    private fun applyTabTranslations() {
+        try {
+            val labels = listOf(
+                R.id.tabMyWorkersLabel to "tab_my_workers",
+                R.id.tabAddWorkerLabel to "tab_add_worker",
+                R.id.tabAssignTrainingLabel to "tab_assign_training",
+                R.id.tabProgressLabel to "tab_progress"
+            )
+            labels.forEach { (id, key) ->
+                findViewById<TextView>(id)?.text = LanguageManager.get(key)
+            }
+        } catch (_: Exception) {}
     }
 
     private fun selectTab(tab: String) {
@@ -128,11 +143,11 @@ class ManagerActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    showEmpty("Failed to load workers")
+                    showEmpty(LanguageManager.get("failed_load_workers"))
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }
@@ -155,13 +170,13 @@ class ManagerActivity : AppCompatActivity() {
         })
 
         card.addView(TextView(this).apply {
-            text = "ID: $userId | Phone: $phone"
+            text = "${LanguageManager.get("id_label")}: $userId | ${LanguageManager.get("phone_label")}: $phone"
             setTextColor(getColor(R.color.text_secondary))
             textSize = 12f
         })
 
         val statusText = TextView(this).apply {
-            text = if (pending) "⏳ Awaiting admin approval" else "✓ Active"
+            text = if (pending) "⏳ ${LanguageManager.get("awaiting_approval")}" else "✓ ${LanguageManager.get("active_status")}"
             setTextColor(if (pending) getColor(R.color.warning) else getColor(R.color.success))
             textSize = 13f
             setPadding(0, 4, 0, 0)
@@ -291,11 +306,11 @@ class ManagerActivity : AppCompatActivity() {
                     Toast.makeText(this@ManagerActivity, LanguageManager.get("manager_worker_added"), Toast.LENGTH_SHORT).show()
                     onDone()
                 } else {
-                    val errMsg = response.errorBody()?.string() ?: "Failed"
-                    Toast.makeText(this@ManagerActivity, "Failed: $errMsg", Toast.LENGTH_SHORT).show()
+                    val errMsg = response.errorBody()?.string() ?: LanguageManager.get("failed_code")
+                    Toast.makeText(this@ManagerActivity, LanguageManager.get("request_failed_short"), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@ManagerActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ManagerActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -314,14 +329,14 @@ class ManagerActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 if (!workersResponse.isSuccessful) {
-                    showEmpty("Failed to load workers")
+                    showEmpty(LanguageManager.get("failed_load_workers"))
                     return@launch
                 }
 
                 val activeWorkers = (workersResponse.body() ?: emptyList()).filter { !it.awaitingAdminConfirmation && it.isActive }
 
                 if (activeWorkers.isEmpty()) {
-                    showEmpty("No active workers to assign training")
+                    showEmpty(LanguageManager.get("no_active_workers_assign"))
                     return@launch
                 }
 
@@ -383,7 +398,7 @@ class ManagerActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }
@@ -400,13 +415,15 @@ class ManagerActivity : AppCompatActivity() {
             try {
                 val response = ApiClient.api.assignScenario(token, request)
                 if (response.isSuccessful) {
-                    Toast.makeText(this@ManagerActivity, "$scenarioName assigned to $workerId", Toast.LENGTH_SHORT).show()
+                    val msg = LanguageManager.get("assigned_to")
+                        .replace("%1\$s", scenarioName)
+                        .replace("%2\$s", workerId)
+                    Toast.makeText(this@ManagerActivity, msg, Toast.LENGTH_SHORT).show()
                 } else {
-                    val errMsg = response.errorBody()?.string() ?: "Failed"
-                    Toast.makeText(this@ManagerActivity, "Failed: $errMsg", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ManagerActivity, LanguageManager.get("request_failed_short"), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@ManagerActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ManagerActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -425,14 +442,14 @@ class ManagerActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 if (!workersResponse.isSuccessful) {
-                    showEmpty("Failed to load workers")
+                    showEmpty(LanguageManager.get("failed_load_workers"))
                     return@launch
                 }
 
                 val activeWorkers = (workersResponse.body() ?: emptyList()).filter { !it.awaitingAdminConfirmation && it.isActive }
 
                 if (activeWorkers.isEmpty()) {
-                    showEmpty("No active workers")
+                    showEmpty(LanguageManager.get("no_active_workers"))
                     return@launch
                 }
 
@@ -479,8 +496,12 @@ class ManagerActivity : AppCompatActivity() {
                                 val total = history.size
                                 val avgScore = if (total > 0) history.map { it.totalScore }.average().toInt() else 0
                                 val lastAttempt = history.maxByOrNull { it.startTime }
-                                val lastText = if (lastAttempt != null) "Last: ${lastAttempt.scenarioId}" else "No attempts yet"
-                                statusText.text = "Scenarios: $total | Passed: $completed | Avg: $avgScore% | $lastText"
+                                val lastText = if (lastAttempt != null) "${LanguageManager.get("last_attempt")}: ${lastAttempt.scenarioId}" else LanguageManager.get("no_attempts_yet")
+                                statusText.text = LanguageManager.get("scenario_stats")
+                                    .replace("%1\$d", total.toString())
+                                    .replace("%2\$d", completed.toString())
+                                    .replace("%3\$d", avgScore.toString())
+                                    .replace("%4\$s", lastText)
                             } else {
                                 statusText.text = LanguageManager.get("no_training_data")
                             }
@@ -491,7 +512,7 @@ class ManagerActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }

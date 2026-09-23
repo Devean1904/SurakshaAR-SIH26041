@@ -56,9 +56,24 @@ class AdminActivity : AppCompatActivity() {
 
         backButton.setOnClickListener { finish() }
         titleText.text = LanguageManager.get("admin_panel")
+        applyTabTranslations()
 
         val initialTab = intent.getStringExtra("tab") ?: "workers"
         setupTabs(initialTab)
+    }
+
+    private fun applyTabTranslations() {
+        try {
+            val labels = listOf(
+                R.id.tabWorkersLabel to "tab_workers",
+                R.id.tabManagersLabel to "tab_managers",
+                R.id.tabAnalyticsLabel to "tab_analytics",
+                R.id.tabSitesLabel to "tab_sites"
+            )
+            labels.forEach { (id, key) ->
+                findViewById<TextView>(id)?.text = LanguageManager.get(key)
+            }
+        } catch (_: Exception) {}
     }
 
     private fun setupTabs(initialTab: String) {
@@ -182,27 +197,27 @@ class AdminActivity : AppCompatActivity() {
         })
 
         card.addView(TextView(this).apply {
-            text = "ID: $userId"
+            text = "${LanguageManager.get("id_label")}: $userId"
             setTextColor(getColor(R.color.text_secondary))
             textSize = 12f
         })
 
         card.addView(TextView(this).apply {
-            text = "Phone: $phone"
+            text = "${LanguageManager.get("phone_label")}: $phone"
             setTextColor(getColor(R.color.text_secondary))
             textSize = 12f
         })
 
         if (managerId.isNotEmpty()) {
             card.addView(TextView(this).apply {
-                text = "Manager: $managerId"
+                text = "${LanguageManager.get("manager_label")}: $managerId"
                 setTextColor(getColor(R.color.text_muted))
                 textSize = 11f
             })
         }
 
         val statusText = TextView(this).apply {
-            text = if (pending) "⏳ Pending approval" else "✓ Active"
+            text = if (pending) "⏳ ${LanguageManager.get("pending_approval")}" else "✓ ${LanguageManager.get("active_status")}"
             setTextColor(if (pending) getColor(R.color.warning) else getColor(R.color.success))
             textSize = 13f
             setPadding(0, 4, 0, 0)
@@ -218,7 +233,7 @@ class AdminActivity : AppCompatActivity() {
 
         if (pending) {
             btnRow.addView(MaterialButton(this).apply {
-                text = "✓ Approve"
+                text = "✓ ${LanguageManager.get("approve")}"
                 setTextColor(getColor(R.color.white))
                 setBackgroundColor(getColor(R.color.success))
                 val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -276,7 +291,7 @@ class AdminActivity : AppCompatActivity() {
                 contentFrame.addView(backBtn)
 
                 val title = TextView(this@AdminActivity).apply {
-                    text = "Worker: $name ($userId)"
+                    text = "${LanguageManager.get("worker")}: $name ($userId)"
                     setTextColor(getColor(R.color.white))
                     textSize = 18f
                     paint.isFakeBoldText = true
@@ -293,13 +308,13 @@ class AdminActivity : AppCompatActivity() {
                     layoutParams = p
                 }
                 infoCard.addView(TextView(this@AdminActivity).apply {
-                    text = "Phone: $phone"
+                    text = "${LanguageManager.get("phone_label")}: $phone"
                     setTextColor(getColor(R.color.text_secondary))
                     textSize = 13f
                 })
                 if (managerId.isNotEmpty()) {
                     infoCard.addView(TextView(this@AdminActivity).apply {
-                        text = "Enrolled by: $managerId"
+                        text = "${LanguageManager.get("enrolled_by")}: $managerId"
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 13f
                     })
@@ -367,7 +382,7 @@ class AdminActivity : AppCompatActivity() {
                         })
 
                         attemptCard.addView(TextView(this@AdminActivity).apply {
-                            text = "Score: ${attempt.totalScore}% | ${if (attempt.passed) "✓ Passed" else "✕ Failed"}"
+                            text = "${LanguageManager.get("score_label")} ${attempt.totalScore}% | ${if (attempt.passed) LanguageManager.get("passed") else LanguageManager.get("failed")}"
                             setTextColor(if (attempt.passed) getColor(R.color.success) else getColor(R.color.danger))
                             textSize = 12f
                         })
@@ -385,7 +400,7 @@ class AdminActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error loading profile: ${e.message}")
+                showEmpty("${LanguageManager.get("error_loading_profile")}: ${e.message}")
             }
         }
     }
@@ -396,13 +411,13 @@ class AdminActivity : AppCompatActivity() {
             try {
                 val response = ApiClient.api.confirmWorker(token, ConfirmWorkerRequest(workerId))
                 if (response.isSuccessful) {
-                    Toast.makeText(this@AdminActivity, "Worker $workerId approved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminActivity, LanguageManager.get("worker_approved"), Toast.LENGTH_SHORT).show()
                     loadWorkers()
                 } else {
-                    Toast.makeText(this@AdminActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminActivity, LanguageManager.get("failed_code"), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -474,7 +489,7 @@ class AdminActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }
@@ -497,7 +512,7 @@ class AdminActivity : AppCompatActivity() {
         })
 
         card.addView(TextView(this).apply {
-            text = "ID: $userId | Phone: $phone"
+            text = "${LanguageManager.get("id_label")}: $userId | ${LanguageManager.get("phone_label")}: $phone"
             setTextColor(getColor(R.color.text_secondary))
             textSize = 12f
         })
@@ -566,7 +581,7 @@ class AdminActivity : AppCompatActivity() {
                 contentFrame.addView(backBtn)
 
                 val title = TextView(this@AdminActivity).apply {
-                    text = "Manager: $managerName ($managerId)"
+                    text = "${LanguageManager.get("manager_label")}: $managerName ($managerId)"
                     setTextColor(getColor(R.color.white))
                     textSize = 18f
                     setPadding(16, 16, 16, 8)
@@ -641,7 +656,10 @@ class AdminActivity : AppCompatActivity() {
                                     val completed = history.count { it.passed }
                                     val total = history.size
                                     val avgScore = if (total > 0) history.map { it.totalScore }.average().toInt() else 0
-                                    statusText.text = "Attempts: $total | Passed: $completed | Avg Score: $avgScore%"
+                                    statusText.text = LanguageManager.get("attempt_stats")
+                                        .replace("%1\$d", total.toString())
+                                        .replace("%2\$d", completed.toString())
+                                        .replace("%3\$d", avgScore.toString())
                                 } else {
                                     statusText.text = LanguageManager.get("no_training_data")
                                 }
@@ -653,7 +671,7 @@ class AdminActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }
@@ -664,10 +682,10 @@ class AdminActivity : AppCompatActivity() {
             setPadding(48, 32, 48, 16)
         }
 
-        val idInput = TextInputEditText(this).apply { hint = "Manager ID (e.g. M001)" }
-        val nameInput = TextInputEditText(this).apply { hint = "Full Name" }
-        val phoneInput = TextInputEditText(this).apply { hint = "Phone Number" }
-        val passInput = TextInputEditText(this).apply { hint = "Password" }
+        val idInput = TextInputEditText(this).apply { hint = LanguageManager.get("manager_id_hint") }
+        val nameInput = TextInputEditText(this).apply { hint = LanguageManager.get("full_name") }
+        val phoneInput = TextInputEditText(this).apply { hint = LanguageManager.get("phone_number") }
+        val passInput = TextInputEditText(this).apply { hint = LanguageManager.get("password_label") }
 
         listOf(idInput, nameInput, phoneInput, passInput).forEach { formLayout.addView(it) }
 
@@ -695,13 +713,13 @@ class AdminActivity : AppCompatActivity() {
             try {
                 val response = ApiClient.api.addManager(token, AddManagerRequest(userId, name, phone, password))
                 if (response.isSuccessful) {
-                    Toast.makeText(this@AdminActivity, "Manager $userId added", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminActivity, LanguageManager.get("manager_added"), Toast.LENGTH_SHORT).show()
                     loadManagers()
                 } else {
-                    Toast.makeText(this@AdminActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminActivity, LanguageManager.get("failed_code"), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -854,7 +872,7 @@ class AdminActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("error_try_again"))
             }
         }
     }
@@ -875,7 +893,7 @@ class AdminActivity : AppCompatActivity() {
                 try {
                     startActivity(android.content.Intent(this@AdminActivity, SiteMapActivity::class.java))
                 } catch (e: Exception) {
-                    Toast.makeText(this@AdminActivity, "Could not open site mapping", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AdminActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -914,7 +932,7 @@ class AdminActivity : AppCompatActivity() {
             })
 
             card.addView(TextView(this).apply {
-                text = "ID: ${site.siteId}"
+                text = "${LanguageManager.get("id_label")}: ${site.siteId}"
                 setTextColor(getColor(R.color.text_secondary))
                 textSize = 12f
             })

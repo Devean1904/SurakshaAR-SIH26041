@@ -58,6 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tabMyWorkersLabel"
                     android:text="My Workers"
                     android:textColor="@color/white"
                     android:textSize="13sp"
@@ -73,6 +74,7 @@
                 android:background="@color/surface">
 
                 <TextView
+                    android:id="@+id/tabAddWorkerLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Add Worker"
@@ -89,6 +91,7 @@
                 android:background="@color/surface">
 
                 <TextView
+                    android:id="@+id/tabAssignTrainingLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Assign Training"
@@ -105,6 +108,7 @@
                 android:background="@color/surface">
 
                 <TextView
+                    android:id="@+id/tabProgressLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Progress"

@@ -296,7 +296,7 @@ class SiteMapActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Anchor placement failed", e)
-            runOnUiThread { Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show() }
+            runOnUiThread { Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show() }
         }
     }
 
