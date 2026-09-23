@@ -95,7 +95,7 @@ class ManagerActivity : AppCompatActivity() {
                 if (workersResponse.isSuccessful) {
                     val workers = workersResponse.body() ?: emptyList()
                     if (workers.isEmpty()) {
-                        showEmpty("No workers yet. Add workers in the 'Add Worker' tab.")
+                        showEmpty(LanguageManager.get("no_workers_yet"))
                         return@launch
                     }
 
@@ -104,7 +104,7 @@ class ManagerActivity : AppCompatActivity() {
 
                     if (pending.isNotEmpty()) {
                         val header = TextView(this@ManagerActivity).apply {
-                            text = "⏳ PENDING ADMIN APPROVAL (${pending.size})"
+                            text = "${LanguageManager.get("pending_approval")} (${pending.size})"
                             setTextColor(getColor(R.color.warning))
                             textSize = 15f
                             setPadding(16, 16, 16, 8)
@@ -117,7 +117,7 @@ class ManagerActivity : AppCompatActivity() {
 
                     if (active.isNotEmpty()) {
                         val header = TextView(this@ManagerActivity).apply {
-                            text = "✓ ACTIVE WORKERS (${active.size})"
+                            text = "${LanguageManager.get("active_status")} (${active.size})"
                             setTextColor(getColor(R.color.success))
                             textSize = 15f
                             setPadding(16, if (pending.isNotEmpty()) 24 else 16, 16, 8)
@@ -177,7 +177,7 @@ class ManagerActivity : AppCompatActivity() {
             }
 
             btnRow.addView(MaterialButton(this).apply {
-                text = "✕ Remove"
+                text = LanguageManager.get("remove")
                 setTextColor(getColor(R.color.white))
                 setBackgroundColor(getColor(R.color.danger))
                 val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -193,26 +193,26 @@ class ManagerActivity : AppCompatActivity() {
 
     private fun removeWorker(userId: String, name: String) {
         AlertDialog.Builder(this)
-            .setTitle("Remove Worker")
-            .setMessage("Remove $name ($userId) from your team? They will need admin re-approval to rejoin.")
-            .setPositiveButton("Remove") { _, _ ->
+            .setTitle(LanguageManager.get("remove_worker"))
+            .setMessage("${LanguageManager.get("remove")} $name ($userId)?")
+            .setPositiveButton(LanguageManager.get("remove")) { _, _ ->
                 val token = SessionManager.authHeader
                 lifecycleScope.launch(exceptionHandler) {
                     try {
                         val response = ApiClient.api.removeManagerWorker(token, RemoveUserRequest(userId))
                         if (response.isSuccessful) {
-                            Toast.makeText(this@ManagerActivity, "$name removed from your team", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ManagerActivity, LanguageManager.get("worker_removed"), Toast.LENGTH_SHORT).show()
                             loadMyWorkers()
                         } else {
-                            val errMsg = response.errorBody()?.string() ?: "Failed"
-                            Toast.makeText(this@ManagerActivity, "Failed: $errMsg", Toast.LENGTH_SHORT).show()
+                            val errMsg = response.errorBody()?.string() ?: LanguageManager.get("failed_to_load")
+                            Toast.makeText(this@ManagerActivity, errMsg, Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@ManagerActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ManagerActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(LanguageManager.get("cancel"), null)
             .show()
     }
 
@@ -462,7 +462,7 @@ class ManagerActivity : AppCompatActivity() {
                     })
 
                     val statusText = TextView(this@ManagerActivity).apply {
-                        text = "Loading training history..."
+                        text = LanguageManager.get("load_history")
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 12f
                         setPadding(0, 8, 0, 0)
@@ -482,10 +482,10 @@ class ManagerActivity : AppCompatActivity() {
                                 val lastText = if (lastAttempt != null) "Last: ${lastAttempt.scenarioId}" else "No attempts yet"
                                 statusText.text = "Scenarios: $total | Passed: $completed | Avg: $avgScore% | $lastText"
                             } else {
-                                statusText.text = "No training data available"
+                                statusText.text = LanguageManager.get("no_training_data")
                             }
                         } catch (e: Exception) {
-                            statusText.text = "Could not load data"
+                            statusText.text = LanguageManager.get("failed_to_load")
                         }
                     }
                 }

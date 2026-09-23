@@ -94,8 +94,8 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 - **Offline sync** — failed assessment submits and training attempts queue locally and flush on next dashboard open via `/worker/online/sync`; prefetch uses `/worker/offline/{id}`
 - **Manager panel** — workers, add worker, assign training, progress
 - **Admin panel (app + web)** — workers/managers, escalations, site mapping, compliance, certificates list, attempts list
-- **Localization** — English, Hindi, Santali (+ mr/ta/te/kn) via `LanguageManager`; results/certificate screens fully localized
-- **Screen reader** — VoiceManager TTS, tap-to-speak, Read Screen, Voice Packs (Santali falls back to hi-IN)
+- **Localization** — English, Hindi, Santali (+ mr/ta/te/kn) via `LanguageManager`; all main screens localized
+- **Screen reader** — VoiceManager TTS, tap-to-speak, Read Screen, Voice Packs (Santali TTS falls back sat → hi-IN → en)
 
 ## Default roles
 

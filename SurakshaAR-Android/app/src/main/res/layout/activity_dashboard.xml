@@ -90,6 +90,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/adminControlCenterLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ADMIN CONTROL CENTER"
@@ -364,6 +365,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/domainDescFire"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -423,6 +425,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/domainDescGas"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -482,6 +485,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/domainDescMachinery"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -541,6 +545,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/domainDescElectrical"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -600,6 +605,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/domainDescHeights"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -1429,6 +1435,7 @@
                 android:tint="@color/primary" />
 
             <TextView
+                android:id="@+id/navHomeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -1482,6 +1489,7 @@
                 android:tint="@color/text_muted" />
 
             <TextView
+                android:id="@+id/navCertsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -1508,6 +1516,7 @@
                 android:tint="@color/text_muted" />
 
             <TextView
+                android:id="@+id/navProfileLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"

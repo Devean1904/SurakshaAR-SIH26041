@@ -32,11 +32,15 @@ object VoiceManager : TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private val ready = AtomicBoolean(false)
     private var currentLocale: Locale = Locale.ENGLISH
+    private var requestedLangCode: String = "sat"
+    private var appliedLangCode: String? = null
+    private var pendingLangCode: String? = null
     private var lastSpoken: String = ""
     private var lastSpokenAtMs: Long = 0L
 
     fun init(context: Context) {
         if (tts != null) return
+        requestedLangCode = LanguageManager.getCurrentLanguage()
         tts = TextToSpeech(context.applicationContext, this)
         applyLanguage(LanguageManager.getCurrentLanguage())
     }
@@ -44,7 +48,7 @@ object VoiceManager : TextToSpeech.OnInitListener {
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             ready.set(true)
-            applyLanguage(LanguageManager.getCurrentLanguage())
+            applyLanguage(pendingLangCode ?: LanguageManager.getCurrentLanguage())
             Log.i(TAG, "TTS ready locale=$currentLocale")
         } else {
             Log.e(TAG, "TTS init failed status=$status")
@@ -63,31 +67,44 @@ object VoiceManager : TextToSpeech.OnInitListener {
     }
 
     fun applyLanguage(langCode: String) {
-        val locale = localeFor(langCode)
-        currentLocale = locale
-        val engine = tts ?: return
-        val result = engine.setLanguage(locale)
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            val fallback = when (langCode) {
-                "sat" -> Locale("hi", "IN")
-                else -> Locale.ENGLISH
+        requestedLangCode = langCode
+        val engine = tts ?: run { pendingLangCode = langCode; return }
+        pendingLangCode = null
+        val chain = localeChain(langCode)
+        var applied: Locale? = null
+        for (loc in chain) {
+            val result = try { engine.setLanguage(loc) } catch (_: Exception) { TextToSpeech.ERROR }
+            if (result != TextToSpeech.LANG_MISSING_DATA &&
+                result != TextToSpeech.LANG_NOT_SUPPORTED &&
+                result != TextToSpeech.ERROR
+            ) {
+                applied = loc
+                break
             }
-            engine.setLanguage(fallback)
-            currentLocale = fallback
         }
-        engine.language = currentLocale
+        if (applied == null) {
+            applied = Locale.ENGLISH
+            engine.setLanguage(Locale.ENGLISH)
+        }
+            currentLocale = applied
+        appliedLangCode = langCode
+        try { engine.language = applied } catch (_: Exception) {}
         engine.setSpeechRate(0.95f)
+        Log.i(TAG, "TTS language $langCode -> $applied")
     }
 
-    private fun localeFor(langCode: String): Locale = when (langCode) {
-        "en" -> Locale("en", "IN")
-        "hi" -> Locale("hi", "IN")
-        "sat" -> Locale("hi", "IN") // Santali rarely has a system TTS voice; Hindi is closest
-        "mr" -> Locale("mr", "IN")
-        "ta" -> Locale("ta", "IN")
-        "te" -> Locale("te", "IN")
-        "kn" -> Locale("kn", "IN")
-        else -> Locale.ENGLISH
+    private fun localeChain(langCode: String): List<Locale> = when (langCode) {
+        "sat" -> listOf(
+            Locale("sat", "IN"),
+            Locale("hi", "IN"),
+            Locale.ENGLISH
+        )
+        "hi" -> listOf(Locale("hi", "IN"), Locale.ENGLISH)
+        "mr" -> listOf(Locale("mr", "IN"), Locale("hi", "IN"), Locale.ENGLISH)
+        "ta" -> listOf(Locale("ta", "IN"), Locale.ENGLISH)
+        "te" -> listOf(Locale("te", "IN"), Locale("hi", "IN"), Locale.ENGLISH)
+        "kn" -> listOf(Locale("kn", "IN"), Locale("hi", "IN"), Locale.ENGLISH)
+        else -> listOf(Locale("en", "IN"), Locale.ENGLISH)
     }
 
     fun speak(text: String?, force: Boolean = false) {
@@ -96,6 +113,10 @@ object VoiceManager : TextToSpeech.OnInitListener {
         if (!force && !isEnabled()) return
         val engine = tts ?: return
         if (!ready.get()) return
+
+        if (requestedLangCode != appliedLangCode) {
+            applyLanguage(LanguageManager.getCurrentLanguage())
+        }
 
         val now = System.currentTimeMillis()
         if (!force && clean == lastSpoken && now - lastSpokenAtMs < 900) return
@@ -144,7 +165,9 @@ object VoiceManager : TextToSpeech.OnInitListener {
         val parts = linkedSetOf<String>()
         collectReadable(root, parts, limit = 18)
         if (parts.isEmpty()) {
-            speak(activity.title?.toString() ?: "Screen", force = true)
+            val fallback = activity.title?.toString()?.takeIf { it.isNotBlank() }
+                ?: LanguageManager.get("read_screen")
+            speak(fallback, force = true)
         } else {
             speak(parts.joinToString(". "), force = true)
         }

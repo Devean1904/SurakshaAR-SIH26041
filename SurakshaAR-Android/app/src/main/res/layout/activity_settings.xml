@@ -24,6 +24,7 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/settingsTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -46,6 +47,7 @@
 
             <!-- Language Section -->
             <TextView
+                android:id="@+id/languageHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Language"
@@ -62,6 +64,7 @@
 
             <!-- Theme Section -->
             <TextView
+                android:id="@+id/themeHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -80,6 +83,7 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/darkModeLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -96,6 +100,7 @@
 
             <!-- Quality Section -->
             <TextView
+                android:id="@+id/qualityHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -229,6 +234,7 @@
 
             <!-- About Section -->
             <TextView
+                android:id="@+id/aboutHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

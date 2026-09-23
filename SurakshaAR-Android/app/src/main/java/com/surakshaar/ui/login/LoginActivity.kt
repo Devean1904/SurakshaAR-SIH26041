@@ -162,6 +162,8 @@ class LoginActivity : AppCompatActivity() {
             verifyOtpButton.text = t.get("otp_verify")
             backToLoginButton.text = t.get("otp_back")
             languageButton.text = LanguageManager.getLanguageName(SessionManager.language.ifEmpty { LanguageManager.getCurrentLanguage() })
+            phoneInput.hint = t.get("enter_phone")
+            statusText.hint = t.get("login_subtitle")
         } catch (e: Exception) {
             // Translation failed
         }
@@ -181,15 +183,15 @@ class LoginActivity : AppCompatActivity() {
         val companyId = "" // Company resolved from user ID server-side
 
         if (userId.isEmpty()) {
-            statusText.text = "Please enter your Worker ID"
+            statusText.text = LanguageManager.get("enter_id")
             return
         }
         if (password.isEmpty()) {
-            statusText.text = "Please enter your password"
+            statusText.text = LanguageManager.get("login_password")
             return
         }
 
-        statusText.text = "Logging in..."
+        statusText.text = LanguageManager.get("logging_in")
         loginButton.isEnabled = false
 
         lifecycleScope.launch {
@@ -205,7 +207,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                         navigateToDashboard()
                     } else {
-                        val failMsg = body?.message ?: "Login failed. Please try again."
+                        val failMsg = body?.message ?: LanguageManager.get("login_failed")
                         statusText.text = failMsg
                         VoiceManager.speak(failMsg, force = true)
                     }
@@ -233,36 +235,37 @@ class LoginActivity : AppCompatActivity() {
         return when (code) {
             400 -> {
                 if (message.isNotEmpty()) message
-                else "Please enter valid ID and password"
+                else LanguageManager.get("enter_id_password")
             }
             401 -> {
                 when {
                     message.contains("pending admin confirmation", ignoreCase = true) ->
-                        "Account pending admin confirmation. Ask your admin to approve you."
+                        LanguageManager.get("account_pending")
                     message.contains("not found", ignoreCase = true) ->
-                        "Worker ID not found. Please check your ID."
+                        LanguageManager.get("id_not_found")
                     message.contains("invalid password", ignoreCase = true) ->
-                        "Incorrect password. Please try again."
+                        LanguageManager.get("incorrect_password")
                     message.contains("not registered", ignoreCase = true) ->
-                        "Phone number not registered."
+                        LanguageManager.get("phone_not_registered")
                     message.isNotEmpty() -> message
-                    else -> "Invalid credentials. Please try again."
+                    else -> LanguageManager.get("invalid_credentials")
                 }
             }
-            403 -> "Access denied. Contact your administrator."
-            404 -> "Server endpoint not found."
-            500 -> "Server error. Please try again later."
-            in 501..599 -> "Server is unavailable. Please try again later."
-            in 402..499 -> "Request failed. Please try again."
-            0 -> "Cannot reach server. Check your internet connection."
-            else -> "Error ($code). Please try again."
+            403 -> LanguageManager.get("access_denied")
+            404 -> LanguageManager.get("request_failed")
+            500 -> LanguageManager.get("server_error")
+            in 501..599 -> LanguageManager.get("server_error")
+            in 402..499 -> LanguageManager.get("request_failed")
+            0 -> LanguageManager.get("cannot_reach_server")
+            else -> LanguageManager.get("error_try_again")
         }
     }
 
     private fun offlineLogin(userId: String, password: String) {
         if (SessionManager.verifyOfflineCredentials(userId, password)) {
-            statusText.text = "Offline mode - using saved credentials"
-            VoiceManager.speak("Offline mode - using saved credentials", force = true)
+            val offlineMsg = LanguageManager.get("offline_using_saved")
+            statusText.text = offlineMsg
+            VoiceManager.speak(offlineMsg, force = true)
             if (SessionManager.userId.isEmpty()) {
                 SessionManager.userId = userId
                 SessionManager.userName = userId
@@ -273,29 +276,30 @@ class LoginActivity : AppCompatActivity() {
             }
             navigateToDashboard()
         } else {
-            statusText.text = "Cannot reach server. Connect to internet to login."
-            VoiceManager.speak("Cannot reach server. Connect to internet to login.", force = true)
+            val offlineMsg = LanguageManager.get("cannot_reach_login")
+            statusText.text = offlineMsg
+            VoiceManager.speak(offlineMsg, force = true)
         }
     }
 
     private fun onSendOtp() {
         val phone = phoneInput.text.toString().trim()
         if (phone.isEmpty()) {
-            statusText.text = "Enter phone number"
+            statusText.text = LanguageManager.get("enter_phone")
             return
         }
-        statusText.text = "Sending OTP..."
+        statusText.text = LanguageManager.get("sending_otp")
         lifecycleScope.launch {
             try {
                 val response = ApiClient.api.sendOtp(OtpSendRequest(phone))
                 if (response.isSuccessful) {
-                    statusText.text = "OTP sent. Check console for dev OTP."
+                    statusText.text = LanguageManager.get("otp_sent")
                 } else {
                     val errorMsg = parseErrorMessage(response.code(), response.errorBody()?.string())
                     statusText.text = errorMsg
                 }
             } catch (e: Exception) {
-                statusText.text = "Cannot reach server. Check your internet connection."
+                statusText.text = LanguageManager.get("cannot_reach_server")
             }
         }
     }
@@ -305,10 +309,10 @@ class LoginActivity : AppCompatActivity() {
         val otp = otpInput.text.toString().trim()
         val companyId = "" // Company resolved from user ID server-side
         if (phone.isEmpty() || otp.isEmpty()) {
-            statusText.text = "Enter phone and OTP"
+            statusText.text = LanguageManager.get("enter_phone_otp")
             return
         }
-        statusText.text = "Verifying..."
+        statusText.text = LanguageManager.get("verifying")
         lifecycleScope.launch {
             try {
                 val response = ApiClient.api.verifyOtp(OtpVerifyRequest(phone, otp, companyId))
@@ -318,14 +322,14 @@ class LoginActivity : AppCompatActivity() {
                         SessionManager.saveAuth(body)
                         navigateToDashboard()
                     } else {
-                        statusText.text = body?.message ?: "Verification failed"
+                        statusText.text = body?.message ?: LanguageManager.get("verification_failed")
                     }
                 } else {
                     val errorMsg = parseErrorMessage(response.code(), response.errorBody()?.string())
                     statusText.text = errorMsg
                 }
             } catch (e: Exception) {
-                statusText.text = "Cannot reach server. Check your internet connection."
+                statusText.text = LanguageManager.get("cannot_reach_server")
             }
         }
     }

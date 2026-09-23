@@ -58,13 +58,24 @@ class SettingsActivity : AppCompatActivity() {
             logoutButton.text = t.get("logout_button")
             voiceDownloadBtn.text = t.get("voice_packs")
             readScreenBtn.text = t.get("read_screen")
+            qualityLow.text = t.get("settings_quality_low")
+            qualityMed.text = t.get("settings_quality_med")
+            qualityUltra.text = t.get("settings_quality_ultra")
+            findViewById<TextView>(R.id.settingsTitle)?.text = t.get("settings")
+            findViewById<TextView>(R.id.languageHeader)?.text = t.get("settings_language")
+            findViewById<TextView>(R.id.themeHeader)?.text = t.get("settings_theme")
+            findViewById<TextView>(R.id.qualityHeader)?.text = t.get("settings_quality")
+            findViewById<TextView>(R.id.aboutHeader)?.text = t.get("settings_about")
+            findViewById<TextView>(R.id.darkModeLabel)?.text = t.get("settings_dark_mode")
             findViewById<TextView>(R.id.screenReaderHeader)?.text = t.get("screen_reader_title")
             findViewById<TextView>(R.id.screenReaderLabel)?.text = t.get("screen_reader_label")
             findViewById<TextView>(R.id.screenReaderHelp)?.text = t.get("screen_reader_help")
+            val userId = SessionManager.userId
+            val role = SessionManager.role
+            userIdText.text = "${t.get("user_id_label")}: ${userId.ifEmpty { "W001" }}"
+            roleText.text = "${t.get("role_label")}: ${role.replaceFirstChar { c -> c.uppercase() }}"
             findViewById<TextView>(R.id.userIdText)?.let {
-                val userId = SessionManager.userId
-                val role = SessionManager.role
-                it.text = "User ID: ${userId.ifEmpty { "W001" }} | Role: ${role.replaceFirstChar { c -> c.uppercase() }}"
+                it.text = "${t.get("user_id_label")}: ${userId.ifEmpty { "W001" }}"
             }
         } catch (e: Exception) {
         }
@@ -211,18 +222,18 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadUserInfo() {
         val userId = SessionManager.userId
         val role = SessionManager.role
-
-        userIdText.text = "User ID: ${userId.ifEmpty { "W001" }}"
-        roleText.text = "Role: ${role.replaceFirstChar { it.uppercase() }}"
+        val t = LanguageManager
+        userIdText.text = "${t.get("user_id_label")}: ${userId.ifEmpty { "W001" }}"
+        roleText.text = "${t.get("role_label")}: ${role.replaceFirstChar { it.uppercase() }}"
     }
 
     private fun loadVersion() {
         try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             val versionName = packageInfo.versionName ?: "1.0.0"
-            versionText.text = "Version $versionName"
+            versionText.text = "${LanguageManager.get("version_label")} $versionName"
         } catch (e: PackageManager.NameNotFoundException) {
-            versionText.text = "Version 1.0.0"
+            versionText.text = "${LanguageManager.get("version_label")} 1.0.0"
         }
     }
 

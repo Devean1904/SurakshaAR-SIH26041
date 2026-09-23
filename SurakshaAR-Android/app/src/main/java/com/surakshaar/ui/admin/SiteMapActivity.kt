@@ -95,6 +95,9 @@ class SiteMapActivity : AppCompatActivity() {
 
         findViewById<android.widget.Button>(R.id.backButton).setOnClickListener { finish() }
         findViewById<TextView>(R.id.titleText).text = LanguageManager.get("site_title")
+        btnSave.findViewById<TextView>(R.id.saveLabel)?.text = LanguageManager.get("save")
+        btnPlaceAnchor.findViewById<TextView>(R.id.placeAnchorLabel)?.text = LanguageManager.get("place_anchor")
+        tvRecordBtn.text = LanguageManager.get("site_start_recording")
 
         btnRecord.setOnClickListener { toggleRecording() }
         btnPlaceAnchor.setOnClickListener { placeAnchorAtCenter() }
@@ -130,7 +133,7 @@ class SiteMapActivity : AppCompatActivity() {
             arSceneView.planeRenderer.isEnabled = true
             arSceneView.onSessionFailed = { e ->
                 Log.e(TAG, "AR session failed", e)
-                tvStatus.text = "AR init failed: ${e.message}"
+                tvStatus.text = LanguageManager.get("ar_init_failed")
             }
             arSceneView.onSessionCreated = {
                 runOnUiThread {
@@ -145,7 +148,7 @@ class SiteMapActivity : AppCompatActivity() {
             updateHud(force = true, tracking = null, planeTotal = detectedPlaneIds.size)
         } catch (e: Exception) {
             Log.e(TAG, "AR init failed", e)
-            tvStatus.text = "AR init failed: ${e.message}"
+            tvStatus.text = LanguageManager.get("ar_init_failed")
         }
     }
 
@@ -159,7 +162,7 @@ class SiteMapActivity : AppCompatActivity() {
                         processFrame(frame)
                     } else {
                         runOnUiThread {
-                            tvTracking.text = "Tracking: —"
+                            tvTracking.text = LanguageManager.get("tracking_dash")
                         }
                     }
                 } catch (e: Exception) {
@@ -211,12 +214,12 @@ class SiteMapActivity : AppCompatActivity() {
         if (!force && now - lastHudUpdateMs < 200) return
         lastHudUpdateMs = now
 
-        tvPlanesCount.text = "Planes: $planeTotal"
-        tvAnchorsCount.text = "Anchors: ${placedAnchors.size}"
+        tvPlanesCount.text = "${LanguageManager.get("planes")}: $planeTotal"
+        tvAnchorsCount.text = "${LanguageManager.get("anchors")}: ${placedAnchors.size}"
         tvTracking.text = when (tracking) {
-            true -> "Tracking: OK"
-            false -> "Tracking: lost"
-            null -> "Tracking: —"
+            true -> LanguageManager.get("tracking_ok")
+            false -> LanguageManager.get("tracking_lost")
+            null -> LanguageManager.get("tracking_dash")
         }
 
         val hasBounds = detectedPlaneIds.isNotEmpty() || placedAnchors.isNotEmpty()
@@ -224,13 +227,13 @@ class SiteMapActivity : AppCompatActivity() {
             val dx = (boundingMax[0] - boundingMin[0]).coerceAtLeast(0f)
             val dy = (boundingMax[1] - boundingMin[1]).coerceAtLeast(0f)
             val dz = (boundingMax[2] - boundingMin[2]).coerceAtLeast(0f)
-            tvBoundingBox.text = String.format(Locale.US, "Bounds: %.1f × %.1f × %.1f m", dx, dy, dz)
+            tvBoundingBox.text = "${LanguageManager.get("bounds")}: " + String.format(Locale.US, "%.1f × %.1f × %.1f m", dx, dy, dz)
         } else {
-            tvBoundingBox.text = "Bounds: —"
+            tvBoundingBox.text = "${LanguageManager.get("bounds")}: —"
         }
 
         tvSaveSummary.text =
-            "Will save: $planeTotal planes · ${placedAnchors.size} anchors" +
+            "${LanguageManager.get("will_save")}: $planeTotal · ${placedAnchors.size}" +
                 if (isRecording) " · REC" else ""
     }
 
@@ -250,14 +253,14 @@ class SiteMapActivity : AppCompatActivity() {
 
     private fun placeAnchorAtCenter() {
         val frame = arSceneView.frame ?: run {
-            Toast.makeText(this, "AR not ready", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, LanguageManager.get("ar_not_ready"), Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
             val camera = frame.camera ?: return
             if (camera.trackingState != TrackingState.TRACKING) {
-                Toast.makeText(this, "No surfaces detected yet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("no_surfaces"), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -288,7 +291,7 @@ class SiteMapActivity : AppCompatActivity() {
                 }
             } else {
                 runOnUiThread {
-                    Toast.makeText(this, "No surface at center", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("no_surface_center"), Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
@@ -368,12 +371,12 @@ class SiteMapActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         Toast.makeText(this@SiteMapActivity, LanguageManager.get("site_saved"), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this@SiteMapActivity, "Saved locally (server ${response.code()})", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SiteMapActivity, LanguageManager.get("saved_locally"), Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SiteMapActivity, "Saved locally (offline)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SiteMapActivity, LanguageManager.get("saved_locally"), Toast.LENGTH_SHORT).show()
                 }
             }
         }

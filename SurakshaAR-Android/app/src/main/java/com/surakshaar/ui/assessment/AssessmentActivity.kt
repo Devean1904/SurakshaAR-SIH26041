@@ -176,7 +176,7 @@ class AssessmentActivity : AppCompatActivity() {
                 questions.size
             )
         } catch (e: Exception) {
-            "Question ${currentQuestionIndex + 1} of ${questions.size}"
+            LanguageManager.get("question_of")
         }
         questionText.text = question.questionText
 

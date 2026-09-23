@@ -154,12 +154,12 @@ class AdminActivity : AppCompatActivity() {
                         }
                     }
                     if (pendingResponse.isSuccessful && (pendingResponse.body()?.size ?: 0) == 0 && active.isEmpty()) {
-                        showEmpty("No workers found")
+                        showEmpty(LanguageManager.get("no_workers_yet"))
                     }
                 }
             } catch (e: Exception) {
                 progress.visibility = View.GONE
-                showEmpty("Error: ${e.message}")
+                showEmpty(LanguageManager.get("failed_to_load"))
             }
         }
     }
@@ -229,7 +229,7 @@ class AdminActivity : AppCompatActivity() {
         }
 
         btnRow.addView(MaterialButton(this).apply {
-            text = "👤 Profile"
+            text = LanguageManager.get("profile")
             setTextColor(getColor(R.color.white))
             setBackgroundColor(getColor(R.color.primary))
             val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -239,7 +239,7 @@ class AdminActivity : AppCompatActivity() {
         })
 
         btnRow.addView(MaterialButton(this).apply {
-            text = "✕ Remove"
+            text = LanguageManager.get("remove")
             setTextColor(getColor(R.color.white))
             setBackgroundColor(getColor(R.color.danger))
             val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -265,7 +265,7 @@ class AdminActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 val backBtn = MaterialButton(this@AdminActivity).apply {
-                    text = "← Back to Workers"
+                    text = LanguageManager.get("back_to_workers")
                     setTextColor(getColor(R.color.white))
                     setBackgroundColor(getColor(R.color.surface))
                     val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -322,7 +322,7 @@ class AdminActivity : AppCompatActivity() {
                 }
 
                 perfCard.addView(TextView(this@AdminActivity).apply {
-                    text = "Performance"
+                    text = LanguageManager.get("performance")
                     setTextColor(getColor(R.color.white))
                     textSize = 15f
                     paint.isFakeBoldText = true
@@ -333,16 +333,16 @@ class AdminActivity : AppCompatActivity() {
                     orientation = LinearLayout.HORIZONTAL
                     layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 }
-                statsRow.addView(createStatBadge("Attempts", totalAttempts.toString(), R.color.primary))
-                statsRow.addView(createStatBadge("Passed", passed.toString(), R.color.success))
-                statsRow.addView(createStatBadge("Avg Score", "$avgScore%", R.color.warning))
+                statsRow.addView(createStatBadge(LanguageManager.get("attempts"), totalAttempts.toString(), R.color.primary))
+                statsRow.addView(createStatBadge(LanguageManager.get("pass_rate"), passed.toString(), R.color.success))
+                statsRow.addView(createStatBadge(LanguageManager.get("avg_score"), "$avgScore%", R.color.warning))
                 perfCard.addView(statsRow)
 
                 contentFrame.addView(perfCard)
 
                 if (history.isNotEmpty()) {
                     val histHeader = TextView(this@AdminActivity).apply {
-                        text = "Training History"
+                        text = LanguageManager.get("training_history")
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 15f
                         setPadding(16, 16, 16, 8)
@@ -376,7 +376,7 @@ class AdminActivity : AppCompatActivity() {
                     }
                 } else {
                     contentFrame.addView(TextView(this@AdminActivity).apply {
-                        text = "No training history yet"
+                        text = LanguageManager.get("no_training_history")
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 14f
                         gravity = android.view.Gravity.CENTER
@@ -409,25 +409,25 @@ class AdminActivity : AppCompatActivity() {
 
     private fun removeWorker(userId: String) {
         AlertDialog.Builder(this)
-            .setTitle("Remove Worker")
-            .setMessage("Are you sure you want to remove worker $userId?")
-            .setPositiveButton("Remove") { _, _ ->
+            .setTitle(LanguageManager.get("remove_worker"))
+            .setMessage("${LanguageManager.get("remove")} $userId?")
+            .setPositiveButton(LanguageManager.get("remove")) { _, _ ->
                 val token = SessionManager.authHeader
                 lifecycleScope.launch(exceptionHandler) {
                     try {
                         val response = ApiClient.api.removeWorker(token, RemoveUserRequest(userId))
                         if (response.isSuccessful) {
-                            Toast.makeText(this@AdminActivity, "Worker $userId removed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AdminActivity, LanguageManager.get("worker_removed"), Toast.LENGTH_SHORT).show()
                             loadWorkers()
                         } else {
-                            Toast.makeText(this@AdminActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AdminActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@AdminActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AdminActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(LanguageManager.get("cancel"), null)
             .show()
     }
 
@@ -446,7 +446,7 @@ class AdminActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 val addBtn = MaterialButton(this@AdminActivity).apply {
-                    text = "+ Add New Manager"
+                    text = "+ ${LanguageManager.get("add_new_manager")}"
                     setTextColor(getColor(R.color.white))
                     setBackgroundColor(getColor(R.color.success))
                     val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -461,7 +461,7 @@ class AdminActivity : AppCompatActivity() {
                     val allWorkers = if (workersResponse.isSuccessful) workersResponse.body() ?: emptyList() else emptyList()
 
                     if (managers.isEmpty()) {
-                        showEmpty("No managers found")
+                        showEmpty(LanguageManager.get("no_managers_yet"))
                         return@launch
                     }
 
@@ -508,9 +508,9 @@ class AdminActivity : AppCompatActivity() {
             p.topMargin = 10
             layoutParams = p
         }
-        statsRow.addView(createStatBadge("Total", totalWorkers.toString(), R.color.primary))
-        statsRow.addView(createStatBadge("Active", activeWorkers.toString(), R.color.success))
-        statsRow.addView(createStatBadge("Pending", pendingWorkers.toString(), R.color.warning))
+        statsRow.addView(createStatBadge(LanguageManager.get("total"), totalWorkers.toString(), R.color.primary))
+        statsRow.addView(createStatBadge(LanguageManager.get("active_status"), activeWorkers.toString(), R.color.success))
+        statsRow.addView(createStatBadge(LanguageManager.get("pending_approval"), pendingWorkers.toString(), R.color.warning))
         card.addView(statsRow)
 
         val btnRow = LinearLayout(this).apply {
@@ -521,7 +521,7 @@ class AdminActivity : AppCompatActivity() {
         }
 
         btnRow.addView(MaterialButton(this).apply {
-            text = "👤 Profile"
+            text = LanguageManager.get("profile")
             setTextColor(getColor(R.color.white))
             setBackgroundColor(getColor(R.color.primary))
             val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -531,7 +531,7 @@ class AdminActivity : AppCompatActivity() {
         })
 
         btnRow.addView(MaterialButton(this).apply {
-            text = "✕ Remove"
+            text = LanguageManager.get("remove")
             setTextColor(getColor(R.color.white))
             setBackgroundColor(getColor(R.color.danger))
             val p = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -555,7 +555,7 @@ class AdminActivity : AppCompatActivity() {
                 progress.visibility = View.GONE
 
                 val backBtn = MaterialButton(this@AdminActivity).apply {
-                    text = "← Back to Managers"
+                    text = LanguageManager.get("back_to_managers")
                     setTextColor(getColor(R.color.white))
                     setBackgroundColor(getColor(R.color.surface))
                     val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -590,19 +590,19 @@ class AdminActivity : AppCompatActivity() {
                         orientation = LinearLayout.HORIZONTAL
                         layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     }
-                    statsRow.addView(createStatBadge("Total", myWorkers.size.toString(), R.color.primary))
-                    statsRow.addView(createStatBadge("Active", myWorkers.count { it.isActive && !it.awaitingAdminConfirmation }.toString(), R.color.success))
-                    statsRow.addView(createStatBadge("Pending", myWorkers.count { it.awaitingAdminConfirmation }.toString(), R.color.warning))
+                    statsRow.addView(createStatBadge(LanguageManager.get("total"), myWorkers.size.toString(), R.color.primary))
+                    statsRow.addView(createStatBadge(LanguageManager.get("active_status"), myWorkers.count { it.isActive && !it.awaitingAdminConfirmation }.toString(), R.color.success))
+                    statsRow.addView(createStatBadge(LanguageManager.get("pending_approval"), myWorkers.count { it.awaitingAdminConfirmation }.toString(), R.color.warning))
                     summaryCard.addView(statsRow)
                     contentFrame.addView(summaryCard)
 
                     if (myWorkers.isEmpty()) {
-                        showEmpty("No workers under this manager")
+                        showEmpty(LanguageManager.get("no_workers_under_manager"))
                         return@launch
                     }
 
                     val workerHeader = TextView(this@AdminActivity).apply {
-                        text = "Worker Performance"
+                        text = LanguageManager.get("performance")
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 15f
                         setPadding(16, 16, 16, 8)
@@ -626,7 +626,7 @@ class AdminActivity : AppCompatActivity() {
                         })
 
                         val statusText = TextView(this@AdminActivity).apply {
-                            text = "Loading performance data..."
+                            text = LanguageManager.get("load_performance")
                             setTextColor(getColor(R.color.text_secondary))
                             textSize = 12f
                         }
@@ -643,10 +643,10 @@ class AdminActivity : AppCompatActivity() {
                                     val avgScore = if (total > 0) history.map { it.totalScore }.average().toInt() else 0
                                     statusText.text = "Attempts: $total | Passed: $completed | Avg Score: $avgScore%"
                                 } else {
-                                    statusText.text = "No training data"
+                                    statusText.text = LanguageManager.get("no_training_data")
                                 }
                             } catch (e: Exception) {
-                                statusText.text = "Could not load data"
+                                    statusText.text = LanguageManager.get("no_training_data")
                             }
                         }
                     }
@@ -672,20 +672,20 @@ class AdminActivity : AppCompatActivity() {
         listOf(idInput, nameInput, phoneInput, passInput).forEach { formLayout.addView(it) }
 
         AlertDialog.Builder(this)
-            .setTitle("Add New Manager")
+            .setTitle(LanguageManager.get("add_new_manager"))
             .setView(formLayout)
-            .setPositiveButton("Add") { _, _ ->
+            .setPositiveButton(LanguageManager.get("add")) { _, _ ->
                 val userId = idInput.text.toString().trim()
                 val name = nameInput.text.toString().trim()
                 val phone = phoneInput.text.toString().trim()
                 val pass = passInput.text.toString().trim()
                 if (userId.isEmpty() || name.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(this, "ID, Name, and Password required", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("manager_worker_validation"), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 addManager(userId, name, phone, pass)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(LanguageManager.get("cancel"), null)
             .show()
     }
 
@@ -708,25 +708,25 @@ class AdminActivity : AppCompatActivity() {
 
     private fun removeManager(userId: String) {
         AlertDialog.Builder(this)
-            .setTitle("Remove Manager")
-            .setMessage("Remove manager $userId? Their workers will need reassignment.")
-            .setPositiveButton("Remove") { _, _ ->
+            .setTitle(LanguageManager.get("remove_worker"))
+            .setMessage("${LanguageManager.get("remove")} $userId?")
+            .setPositiveButton(LanguageManager.get("remove")) { _, _ ->
                 val token = SessionManager.authHeader
                 lifecycleScope.launch(exceptionHandler) {
                     try {
                         val response = ApiClient.api.removeManager(token, RemoveUserRequest(userId))
                         if (response.isSuccessful) {
-                            Toast.makeText(this@AdminActivity, "Manager $userId removed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AdminActivity, LanguageManager.get("worker_removed"), Toast.LENGTH_SHORT).show()
                             loadManagers()
                         } else {
-                            Toast.makeText(this@AdminActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AdminActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@AdminActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AdminActivity, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(LanguageManager.get("cancel"), null)
             .show()
     }
 
@@ -750,7 +750,7 @@ class AdminActivity : AppCompatActivity() {
                 val pendingWorkers = if (pendingResp.isSuccessful) pendingResp.body() ?: emptyList() else emptyList()
 
                 val title = TextView(this@AdminActivity).apply {
-                    text = "System Overview"
+                    text = LanguageManager.get("system_overview")
                     setTextColor(getColor(R.color.white))
                     textSize = 18f
                     setPadding(16, 16, 16, 8)
@@ -778,7 +778,7 @@ class AdminActivity : AppCompatActivity() {
                 contentFrame.addView(summaryCard)
 
                 val managerHeader = TextView(this@AdminActivity).apply {
-                    text = "Manager Performance Overview"
+                    text = LanguageManager.get("manager_performance")
                     setTextColor(getColor(R.color.text_secondary))
                     textSize = 15f
                     setPadding(16, 16, 16, 8)
@@ -815,13 +815,13 @@ class AdminActivity : AppCompatActivity() {
                         p.topMargin = 8
                         layoutParams = p
                     }
-                    statsRow2.addView(createStatBadge("Workers", "${managerWorkers.size}", R.color.primary))
-                    statsRow2.addView(createStatBadge("Active", "$activeCount", R.color.success))
-                    statsRow2.addView(createStatBadge("Pending", "${managerWorkers.count { it.awaitingAdminConfirmation }}", R.color.warning))
+                    statsRow2.addView(createStatBadge(LanguageManager.get("workers"), "${managerWorkers.size}", R.color.primary))
+                    statsRow2.addView(createStatBadge(LanguageManager.get("active_status"), "$activeCount", R.color.success))
+                    statsRow2.addView(createStatBadge(LanguageManager.get("pending_approval"), "${managerWorkers.count { it.awaitingAdminConfirmation }}", R.color.warning))
                     card.addView(statsRow2)
 
                     val perfText = TextView(this@AdminActivity).apply {
-                        text = "Loading training performance..."
+                        text = LanguageManager.get("load_performance")
                         setTextColor(getColor(R.color.text_secondary))
                         textSize = 12f
                         setPadding(0, 8, 0, 0)
@@ -846,9 +846,9 @@ class AdminActivity : AppCompatActivity() {
                             }
                             val avgScore = if (scoreCount > 0) totalScore / scoreCount else 0
                             val passRate = if (totalAttempts > 0) (totalPassed * 100 / totalAttempts) else 0
-                            perfText.text = "Training: $totalAttempts attempts | $totalPassed passed | Pass rate: $passRate% | Avg score: $avgScore%"
+                            perfText.text = LanguageManager.get("attempts") + ": $totalAttempts | " + LanguageManager.get("pass_rate") + ": $passRate% | " + LanguageManager.get("avg_score") + ": $avgScore%"
                         } catch (e: Exception) {
-                            perfText.text = "Could not load performance data"
+                            perfText.text = LanguageManager.get("no_training_data")
                         }
                     }
                 }
@@ -865,7 +865,7 @@ class AdminActivity : AppCompatActivity() {
         contentFrame.removeAllViews()
 
         val addBtn = MaterialButton(this).apply {
-            text = "+ Record New Site"
+            text = "+ ${LanguageManager.get("record_new_site")}"
             setTextColor(getColor(R.color.white))
             setBackgroundColor(getColor(R.color.success))
             val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -883,12 +883,12 @@ class AdminActivity : AppCompatActivity() {
 
         val sites = SiteStorage.getAllSites()
         if (sites.isEmpty()) {
-            showEmpty("No sites recorded yet. Tap the button above to record a site.")
+            showEmpty(LanguageManager.get("no_sites_yet"))
             return
         }
 
         val header = TextView(this).apply {
-            text = "Recorded Sites (${sites.size})"
+            text = "${LanguageManager.get("recorded_sites")} (${sites.size})"
             setTextColor(getColor(R.color.white))
             textSize = 15f
             setPadding(16, 8, 16, 8)
@@ -920,7 +920,7 @@ class AdminActivity : AppCompatActivity() {
             })
 
             card.addView(TextView(this).apply {
-                text = "Recorded: ${site.recordedAt}"
+                text = "${LanguageManager.get("recorded_at")}: ${site.recordedAt}"
                 setTextColor(getColor(R.color.text_secondary))
                 textSize = 12f
             })
@@ -931,13 +931,13 @@ class AdminActivity : AppCompatActivity() {
                 p.topMargin = 10
                 layoutParams = p
             }
-            statsRow.addView(createStatBadge("Planes", site.planesDetected.toString(), R.color.primary))
-            statsRow.addView(createStatBadge("Anchors", site.anchorsPlaced.toString(), R.color.success))
-            statsRow.addView(createStatBadge("Floor", String.format("%.1fm", site.floorLevel), R.color.warning))
+            statsRow.addView(createStatBadge(LanguageManager.get("planes"), site.planesDetected.toString(), R.color.primary))
+            statsRow.addView(createStatBadge(LanguageManager.get("anchors"), site.anchorsPlaced.toString(), R.color.success))
+            statsRow.addView(createStatBadge(LanguageManager.get("avg_score"), String.format("%.1fm", site.floorLevel), R.color.warning))
             card.addView(statsRow)
 
             val removeBtn = MaterialButton(this).apply {
-                text = "Delete Site"
+                text = LanguageManager.get("delete_site")
                 setTextColor(getColor(R.color.white))
                 setBackgroundColor(getColor(R.color.danger))
                 val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -945,13 +945,13 @@ class AdminActivity : AppCompatActivity() {
                 layoutParams = p
                 setOnClickListener {
                     AlertDialog.Builder(this@AdminActivity)
-                        .setTitle("Delete Site")
-                        .setMessage("Delete '${site.siteName}'? This cannot be undone.")
-                        .setPositiveButton("Delete") { _, _ ->
+                        .setTitle(LanguageManager.get("delete_site"))
+                        .setMessage("${LanguageManager.get("delete")} '${site.siteName}'?")
+                        .setPositiveButton(LanguageManager.get("delete")) { _, _ ->
                             SiteStorage.deleteSite(site.siteId)
                             loadSites()
                         }
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(LanguageManager.get("cancel"), null)
                         .show()
                 }
             }

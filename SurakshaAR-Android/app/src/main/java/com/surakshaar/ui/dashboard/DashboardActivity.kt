@@ -152,7 +152,7 @@ class DashboardActivity : AppCompatActivity() {
                 com.surakshaar.data.offline.OfflineSync.prefetchOfflineData()
                 Toast.makeText(
                     this@DashboardActivity,
-                    "Synced $pending offline item(s)",
+                    LanguageManager.get("synced_items"),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -341,13 +341,13 @@ class DashboardActivity : AppCompatActivity() {
 
         when (role.lowercase()) {
             "admin" -> {
-                trainingLabel?.text = "Analytics"
+                trainingLabel?.text = LanguageManager.get("admin_reports")
             }
             "manager" -> {
-                trainingLabel?.text = "Workers"
+                trainingLabel?.text = LanguageManager.get("workers")
             }
             else -> {
-                trainingLabel?.text = "Training"
+                trainingLabel?.text = LanguageManager.get("nav_training")
             }
         }
 
@@ -448,28 +448,28 @@ class DashboardActivity : AppCompatActivity() {
                 try {
                     startActivity(Intent(this, ManagerActivity::class.java).putExtra("tab", "myWorkers"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open workers: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             findViewById<ImageButton>(R.id.btnManagerAddWorker)?.setOnClickListener {
                 try {
                     startActivity(Intent(this, ManagerActivity::class.java).putExtra("tab", "addWorker"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open add worker: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             findViewById<ImageButton>(R.id.btnManagerAssign)?.setOnClickListener {
                 try {
                     startActivity(Intent(this, ManagerActivity::class.java).putExtra("tab", "assignTraining"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open assign training: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             findViewById<ImageButton>(R.id.btnManagerReports)?.setOnClickListener {
                 try {
                     startActivity(Intent(this, ManagerActivity::class.java).putExtra("tab", "progress"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open progress: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
             findViewById<ImageButton>(R.id.btnManagerEscalations)?.setOnClickListener {
@@ -479,7 +479,7 @@ class DashboardActivity : AppCompatActivity() {
                 try {
                     startActivity(Intent(this, ManagerActivity::class.java).putExtra("tab", "progress"))
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open scenarios: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
@@ -541,7 +541,7 @@ class DashboardActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Toast.makeText(
                     this@DashboardActivity,
-                    "Verification unavailable (offline or server error)",
+                    LanguageManager.get("verification_failed"),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -561,7 +561,8 @@ class DashboardActivity : AppCompatActivity() {
                     Toast.makeText(this@DashboardActivity, msg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DashboardActivity, "Failed to load reports", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Failed to load reports", e)
+                Toast.makeText(this@DashboardActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -576,7 +577,7 @@ class DashboardActivity : AppCompatActivity() {
                     Toast.makeText(this@DashboardActivity, "Sites loaded: ${sites.size}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DashboardActivity, "Failed to load sites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DashboardActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -591,7 +592,7 @@ class DashboardActivity : AppCompatActivity() {
                     Toast.makeText(this@DashboardActivity, "Escalations: ${escalations.size}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DashboardActivity, "Failed to load escalations", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DashboardActivity, LanguageManager.get("failed_to_load"), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -683,6 +684,16 @@ class DashboardActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.domainTitleMachinery)?.text = t.get("domain_machinery")
             findViewById<TextView>(R.id.domainTitleElectrical)?.text = t.get("domain_electrical")
             findViewById<TextView>(R.id.domainTitleHeights)?.text = t.get("domain_heights")
+            findViewById<TextView>(R.id.domainDescFire)?.text = t.get("domain_fire_desc")
+            findViewById<TextView>(R.id.domainDescGas)?.text = t.get("domain_gas_desc")
+            findViewById<TextView>(R.id.domainDescMachinery)?.text = t.get("domain_machinery_desc")
+            findViewById<TextView>(R.id.domainDescElectrical)?.text = t.get("domain_electrical_desc")
+            findViewById<TextView>(R.id.domainDescHeights)?.text = t.get("domain_heights_desc")
+            findViewById<TextView>(R.id.adminControlCenterLabel)?.text = t.get("admin_control_center")
+            findViewById<TextView>(R.id.navHomeLabel)?.text = t.get("nav_home")
+            findViewById<TextView>(R.id.navCertsLabel)?.text = t.get("nav_certs")
+            findViewById<TextView>(R.id.navProfileLabel)?.text = t.get("nav_profile")
+            findViewById<TextView>(R.id.tvStatus)?.text = t.get("online")
         } catch (e: Exception) {
             Log.e(TAG, "Translation apply failed", e)
         }

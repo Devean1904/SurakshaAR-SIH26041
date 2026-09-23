@@ -24,6 +24,7 @@
             android:contentDescription="Go back" />
 
         <TextView
+            android:id="@+id/profileTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -110,6 +111,7 @@
                     android:padding="24dp">
 
                     <TextView
+                        android:id="@+id/accountInfoHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account Information"
@@ -124,6 +126,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView
+                            android:id="@+id/userIdLabel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -145,6 +148,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView
+                            android:id="@+id/phoneLabel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -166,6 +170,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView
+                            android:id="@+id/languageLabel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -187,6 +192,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="12dp">
                         <TextView
+                            android:id="@+id/themeLabel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -221,6 +227,7 @@
                     android:padding="24dp">
 
                     <TextView
+                        android:id="@+id/statsHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Training Statistics"
@@ -248,6 +255,7 @@
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
                             <TextView
+                                android:id="@+id/modulesLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Modules"
@@ -269,6 +277,7 @@
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
                             <TextView
+                                android:id="@+id/certsLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Certificates"

@@ -158,10 +158,11 @@ class ARTrainingActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                arStatusText.text = getString(R.string.camera_permission_required)
+                val permMsg = LanguageManager.get("camera_permission_required")
+                arStatusText.text = permMsg
                 Toast.makeText(
                     this,
-                    getString(R.string.camera_permission_required),
+                    permMsg,
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -218,7 +219,7 @@ class ARTrainingActivity : AppCompatActivity() {
             arSceneView.onSessionCreated = {
                 runOnUiThread {
                     arReady = true
-                    arStatusText.text = "AR ready — scanning surfaces…"
+                    arStatusText.text = LanguageManager.get("ar_ready")
                 }
             }
 
@@ -226,7 +227,7 @@ class ARTrainingActivity : AppCompatActivity() {
                 Log.e(TAG, "AR session failed", e)
                 runOnUiThread {
                     arReady = false
-                    arStatusText.text = "AR unavailable: ${e.message}"
+                    arStatusText.text = LanguageManager.get("ar_unavailable")
                 }
             }
 
@@ -241,7 +242,7 @@ class ARTrainingActivity : AppCompatActivity() {
             )
         } catch (e: Exception) {
             Log.e(TAG, "AR setup failed", e)
-            arStatusText.text = "AR setup failed: ${e.message}"
+            arStatusText.text = LanguageManager.get("ar_setup_failed")
         }
     }
 

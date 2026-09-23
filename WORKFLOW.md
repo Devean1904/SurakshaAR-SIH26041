@@ -15,6 +15,8 @@ Native Android + .NET backend path is complete for submission.
 - [x] Admin compliance endpoint + web Compliance tab
 - [x] Hindi/Santali camera permission + LanguageManager result keys
 - [x] Hindi/Santali + 7-language results/certificate localization (Assessment, AR training, Certificate screens; hi/sat complete)
+- [x] Santali TTS locale chain in VoiceManager (sat → hi-IN → en; re-apply on speak)
+- [x] Full 7-language localization of Settings/Profile/Login/Dashboard/AR/SiteMap/Manager/Admin hardcoded strings + layout IDs
 - [x] Dead paths removed (earthquake/flood), junk folders/logs deleted
 - [x] README + DEMO_SCRIPT
 - [x] APK assembled (`app/build/outputs/apk/debug/app-debug.apk`, ~60 MB)
