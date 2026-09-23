@@ -29,6 +29,9 @@ Native Android + .NET backend path is complete for submission.
 - [x] Junk folders/logs cleaned (REF temp_*, JDK installer, Backend *.log)
 - [x] README refreshed (admin certs/attempts, localization, status)
 - [x] Demo DB wipe: all users (admin/manager/worker) + companies cleared from MongoDB
+- [x] Public GitHub repo created + first commit pushed
+- [x] GitHub topics + description set (SIH26041 / IMMUTABLE-A / 153165)
+- [x] Release `v1.0-sih2026` published with `SurakshaAR.apk`
 
 ## Not applicable (Unity path abandoned)
 
@@ -36,6 +39,5 @@ Native Android + .NET backend path is complete for submission.
 
 ## Optional follow-ups
 
-- [ ] Public git init / first commit (git + gh now installed: 2.55.0, 2.101.0)
 - [ ] Release APK signing
 - [ ] Instrumented tests / CI
