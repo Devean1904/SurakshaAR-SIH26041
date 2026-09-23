@@ -13,16 +13,7 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
-
-# Unity (legacy)
-UnityAR/Library/
-UnityAR/Temp/
-UnityAR/Obj/
-UnityAR/Logs/
-UnityAR/UserSettings/
-UnityAR/Builds/
-UnityAR/*.csproj
-UnityAR/*.sln
+.kotlin/
 
 # Secrets / local config
 **/appsettings.*.local.json
@@ -34,16 +25,6 @@ UnityAR/*.sln
 *.keystore
 .env
 .env.*
-
-# Build outputs / caches (keep root release APK tracked)
-**/bin/
-**/obj/
-**/build/
-.gradle/
-local.properties
-
-# Reference / scratch (optional local only)
-REF/ASE.txt
 
 # OS / editor
 .DS_Store

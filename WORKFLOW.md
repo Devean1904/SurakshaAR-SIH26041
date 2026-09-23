@@ -1,46 +1,53 @@
 # SurakshaAR — Development Workflow (Status)
 
-Native Android + .NET backend path is complete for submission.
+Native Android + .NET backend path is the shipping product. Unity prototype removed from the repository.
+
+Last updated: September 23, 2026
 
 ## Completed
 
+### Platform
 - [x] Backend hardening (auth, validation, XSS, Swagger, CORS)
-- [x] Android login (no company ID), dashboard, settings, profile
+- [x] Backend green (0 warnings / 0 errors); health / verify / admin verified
+- [x] MongoDB seed modules on first startup
+- [x] Demo DB wipe capability (users + companies)
+- [x] Root `.gitignore`; build outputs / secrets excluded
+
+### Android app
+- [x] Login (Worker ID only — company resolved server-side), dashboard, settings, profile
 - [x] Real AR training (SceneView ARSceneView, markers, escalation)
 - [x] Site mapping (planes, bounding box, anchors, save)
 - [x] Assessment scoring aligned client/server (50/50, module threshold, ordered answers)
 - [x] Certificates + QR + in-app verify + public `/verify/` page
 - [x] QR scanner on dashboard (zxing IntentIntegrator)
 - [x] Offline queue + flush + worker offline/sync APIs
-- [x] Admin compliance endpoint + web Compliance tab
-- [x] Hindi/Santali camera permission + LanguageManager result keys
-- [x] Hindi/Santali + 7-language results/certificate localization (Assessment, AR training, Certificate screens; hi/sat complete)
-- [x] Santali TTS locale chain in VoiceManager (sat → hi-IN → en; re-apply on speak)
-- [x] Full 7-language localization of Settings/Profile/Login/Dashboard/AR/SiteMap/Manager/Admin hardcoded strings + layout IDs
-- [x] Residual Admin/Manager/Dashboard toasts, status lines, form hints, tab labels localized
-- [x] Dead paths removed (earthquake/flood), junk folders/logs deleted
-- [x] README + DEMO_SCRIPT
-- [x] APK assembled (`app/build/outputs/apk/debug/app-debug.apk`, ~60 MB)
-- [x] Backend green (0 warnings / 0 errors); health / verify / admin verified
-- [x] No "Coming soon" stubs remain in app code
-- [x] Root `.gitignore` added
 - [x] Screen reader / TTS (VoiceManager, Settings toggle, tap-to-speak, Read Screen, Voice Packs)
-- [x] Offline: persist training attempts + flush via `/worker/offline/{id}` + `/worker/online/sync`
-- [x] Web admin certificates/attempts views + API
-- [x] Grading/pass-threshold consistency (client/server/Unity + certificates re-check)
-- [x] Seed Modules admin card removed; no "Coming soon"/QR stubs
-- [x] Junk folders/logs cleaned (REF temp_*, JDK installer, Backend *.log)
-- [x] README refreshed (admin certs/attempts, localization, status)
-- [x] Demo DB wipe: all users (admin/manager/worker) + companies cleared from MongoDB
-- [x] Public GitHub repo created + first commit pushed
-- [x] GitHub topics + description set (SIH26041 / IMMUTABLE-A / 153165)
-- [x] Release `v1.0-sih2026` published with `SurakshaAR.apk`
+- [x] Santali TTS locale chain (sat → hi-IN → en; re-apply on speak)
+- [x] Full 7-language localization (EN/HI/SAT/MR/TA/TE/KN) on all main screens
+- [x] Login input Material box styling (hint overlap fixed)
+- [x] No "Coming soon" stubs remain in app code
+- [x] APK assembled (`app/build/outputs/apk/debug/app-debug.apk`, ~59 MB)
+- [x] Physical-device builds via `-PsurakshaApiBaseUrl=http://<lan-ip>:5000/api/`
 
-## Not applicable (Unity path abandoned)
+### Web / ops
+- [x] Admin compliance endpoint + web Compliance tab
+- [x] Web admin certificates/attempts views + API
+- [x] Firewall helper (`Backend/open-firewall.bat`) for port 5000
+
+### Repo / delivery
+- [x] README + DEMO_SCRIPT + PROJECT_VISION refreshed
+- [x] Public GitHub repo: https://github.com/Devean1904/SurakshaAR-SIH26041
+- [x] GitHub topics + description (SIH26041 / IMMUTABLE-A / 153165)
+- [x] Release `v1.0-sih2026` with `SurakshaAR.apk` + `app-debug.apk`
+- [x] Repo cleaned: root folder `SAFE` → `SurakshaAR`; UnityAR / REF / root APK removed
+
+## Not applicable
 
 - Unity scene automation, particle fire/gas sims, VoiceModule — superseded by native Kotlin app.
+- Legacy Unity prototype and REF docs removed from repository.
 
 ## Optional follow-ups
 
-- [ ] Release APK signing
+- [ ] Release APK signing (keystore)
 - [ ] Instrumented tests / CI
+- [ ] Polygon on-chain certificate anchoring (currently local hash-chain + HMAC)

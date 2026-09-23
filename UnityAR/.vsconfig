@@ -1,8 +1,0 @@
-{
-  "version": "1.0",
-  "completeness": "REQUIRED",
-  "components": [
-    "Microsoft.VisualStudio.Workload.ManagedGame",
-    "Microsoft.VisualStudio.Workload.CoreEditor"
-  ]
-}

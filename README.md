@@ -8,9 +8,11 @@
 | **Theme** | Smart Education · Government of Jharkhand |
 | **Tagline** | Real Hazards. Real Decisions. Safer Tomorrow. |
 
-AR-based workplace safety training platform for mining operations. Workers complete AR hazard scenarios, pass assessments, and earn blockchain-anchored QR certificates that anyone can verify.
+AR-based workplace safety training for mining operations. Workers complete AR hazard scenarios, pass assessments, and earn verifiable QR certificates.
 
-**APK:** [`SurakshaAR.apk`](./SurakshaAR.apk) (~59 MB) — debug build for demo.
+**APK:** [GitHub Releases](https://github.com/Devean1904/SurakshaAR-SIH26041/releases/tag/v1.0-sih2026) (`SurakshaAR.apk`, ~59 MB)
+
+**Repo:** https://github.com/Devean1904/SurakshaAR-SIH26041
 
 ## Stack
 
@@ -24,18 +26,17 @@ AR-based workplace safety training platform for mining operations. Workers compl
 ## Repository layout
 
 ```
-SAFE/
+SurakshaAR/
 ├── SurakshaAR-Android/   # Android app (primary deliverable)
 ├── Backend/              # ASP.NET Core API + admin/verify web UI
 ├── Shared/               # Shared DTOs
 ├── AdminCLI/             # Optional admin CLI
 ├── Proposal/             # Project proposal (HTML + PDF)
-├── REF/                  # Reference docs (not part of build)
-├── UnityAR/              # Legacy Unity prototype (not used)
 ├── SurakshaAR.slnx       # .NET solution
 ├── README.md
 ├── DEMO_SCRIPT.md        # Demo video script
 ├── WORKFLOW.md           # Development status checklist
+├── PROJECT_VISION.md     # Vision + current architecture
 └── .gitignore
 ```
 
@@ -49,7 +50,7 @@ SAFE/
 ## Run the backend
 
 ```powershell
-cd E:\SAFE\Backend
+cd E:\SurakshaAR\Backend
 dotnet run
 ```
 
@@ -61,22 +62,21 @@ dotnet run
 
 Training modules are seeded automatically on first startup.
 
+For LAN access from a physical phone, open firewall port 5000 (`Backend\open-firewall.bat` as admin).
+
 ## Build the Android APK
 
 ```powershell
-cd E:\SAFE\SurakshaAR-Android
+cd E:\SurakshaAR\SurakshaAR-Android
+
 # Emulator default (10.0.2.2 → host)
 gradle --no-daemon :app:assembleDebug
 
-# Physical device on LAN
+# Physical device on same Wi-Fi as the PC
 gradle --no-daemon :app:assembleDebug -PsurakshaApiBaseUrl=http://<pc-ip>:5000/api/
 ```
 
-APK output:
-
-```
-app/build/outputs/apk/debug/app-debug.apk
-```
+APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 Install:
 
@@ -84,9 +84,11 @@ Install:
 adb install -r app\build\outputs\apk\debug\app-debug.apk
 ```
 
+> **Note:** The default base URL is `http://10.0.2.2:5000/api/` (emulator only). Rebuild with `-PsurakshaApiBaseUrl=http://<your-pc-lan-ip>:5000/api/` for a real device.
+
 ## Features
 
-- **Worker dashboard** — domain training cards, certificates, QR scan, settings, language spinner
+- **Worker dashboard** — domain training cards, certificates, QR scan, settings, language selector
 - **AR training** — plane detection, hazard/action markers, escalation engine, scoring
 - **Assessment** — server-graded MCQs, 50/50 action+question weighting, module pass threshold (default 70)
 - **Certificates** — QR payload `SURAKSHA:{certId}:{sha256}`, HMAC signature, local hash-chain tx; server re-checks pass threshold
@@ -94,7 +96,7 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 - **Offline sync** — failed assessment submits and training attempts queue locally and flush on next dashboard open via `/worker/online/sync`; prefetch uses `/worker/offline/{id}`
 - **Manager panel** — workers, add worker, assign training, progress
 - **Admin panel (app + web)** — workers/managers, escalations, site mapping, compliance, certificates list, attempts list
-- **Localization** — English, Hindi, Santali (+ mr/ta/te/kn) via `LanguageManager`; all main screens localized
+- **Localization** — English, Hindi, Santali, Marathi, Tamil, Telugu, Kannada via `LanguageManager`; all main screens localized
 - **Screen reader** — VoiceManager TTS, tap-to-speak, Read Screen, Voice Packs (Santali TTS falls back sat → hi-IN → en)
 
 ## Default roles
@@ -133,6 +135,8 @@ GET  /api/admin/attempts
 See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a step-by-step demo video script.
 
 Status checklist: [WORKFLOW.md](WORKFLOW.md).
+
+Architecture / vision: [PROJECT_VISION.md](PROJECT_VISION.md).
 
 ## Security notes
 
