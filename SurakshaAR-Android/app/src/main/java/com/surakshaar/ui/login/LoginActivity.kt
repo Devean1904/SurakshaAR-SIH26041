@@ -153,8 +153,8 @@ class LoginActivity : AppCompatActivity() {
             val t = LanguageManager
             loginTitle.text = t.get("login_title")
             loginSubtitle.text = t.get("login_subtitle")
-            userIdInput.hint = t.get("login_user_id")
-            passwordInput.hint = t.get("login_password")
+            findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilUserId).hint = t.get("login_user_id")
+            findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilPassword).hint = t.get("login_password")
             rememberToggle.text = t.get("login_remember")
             loginButton.text = t.get("login_button")
             otpLoginButton.text = t.get("login_otp_button")
@@ -162,8 +162,9 @@ class LoginActivity : AppCompatActivity() {
             verifyOtpButton.text = t.get("otp_verify")
             backToLoginButton.text = t.get("otp_back")
             languageButton.text = LanguageManager.getLanguageName(SessionManager.language.ifEmpty { LanguageManager.getCurrentLanguage() })
-            phoneInput.hint = t.get("enter_phone")
-            statusText.hint = t.get("login_subtitle")
+            findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilPhone).hint = t.get("enter_phone")
+            findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilOtp).hint = t.get("otp_enter")
+            statusText.text = ""
         } catch (e: Exception) {
             // Translation failed
         }
