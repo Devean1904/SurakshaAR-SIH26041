@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!-- AR camera passthrough + 3D markers -->
+    <io.github.sceneview.ar.ARSceneView
+        android:id="@+id/arSceneView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- HUD Overlay -->
+    <LinearLayout
+        android:id="@+id/hudOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
+
+        <!-- Top Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#CC000000"
+            android:padding="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/hazardTypeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFFA000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Fire" />
+
+            <TextView
+                android:id="@+id/hazardLevelText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFF1744"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Level 3" />
+
+            <TextView
+                android:id="@+id/timerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="#FFFFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                tools:text="02:30" />
+        </LinearLayout>
+
+        <!-- Timer Progress Bar -->
+        <ProgressBar
+            android:id="@+id/timerProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:max="100"
+            android:progress="100"
+            android:progressTint="#FF4CAF50"
+            android:progressBackgroundTint="#FF1E1E1E" />
+
+        <!-- Score Display -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="end|top"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/scoreText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FF4CAF50"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Score: 100" />
+
+                <TextView
+                    android:id="@+id/penaltyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFF1744"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="-0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- AR status: surfaces / markers -->
+        <TextView
+            android:id="@+id/arStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:text="Starting AR…"
+            android:textColor="#FF80CBC4"
+            android:textSize="12sp"
+            android:background="#66000000"
+            tools:text="Surfaces: 2 · Markers: 3 actions" />
+
+        <!-- Warning Instructions Text -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/instructionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#FFFFFFFF"
+                android:textSize="16sp"
+                android:background="#CC1E1E1E"
+                android:padding="16dp"
+                android:gravity="center"
+                android:text="Use the action buttons below to respond to the hazard" />
+        </FrameLayout>
+
+        <!-- Action Button Container -->
+        <LinearLayout
+            android:id="@+id/actionButtonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
+            android:orientation="horizontal"
+            android:background="#CC1E1E1E"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/extinguishButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Extinguish"
+                android:textColor="#FFFFFFFF"
+                android:backgroundTint="#FF2196F3" />
+
+            <Button
+                android:id="@+id/evacuateButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Evacuate"
+                android:textColor="#FFFFFFFF"
+                android:backgroundTint="#FFFFA000" />
+
+            <Button
+                android:id="@+id/reportButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Report"
+                android:textColor="#FFFFFFFF"
+                android:backgroundTint="#FFFF1744" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Alert Panel (Hidden) -->
+    <LinearLayout
+        android:id="@+id/alertPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#CCFFA000"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/alertText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WARNING!"
+            android:textColor="#FFFFFFFF"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Critical Fail Panel (Hidden) -->
+    <LinearLayout
+        android:id="@+id/criticalFailPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FFFF1744"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/criticalFailTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SCENARIO FAILED"
+            android:textColor="#FFFFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/criticalFailMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have failed the scenario."
+            android:textColor="#FFB0B0B0"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/criticalFailScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score: 0"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:textColor="#FFFFFFFF"
+            android:backgroundTint="#FF2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/viewResultsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Results"
+            android:textColor="#FFFFFFFF"
+            android:backgroundTint="#FF1E1E1E" />
+    </LinearLayout>
+
+    <!-- Evacuation Panel (Hidden) -->
+    <LinearLayout
+        android:id="@+id/evacuationPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FF2196F3"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/evacuationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EVACUATE IMMEDIATELY!"
+            android:textColor="#FFFFFFFF"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Score Results Panel (Hidden) -->
+    <LinearLayout
+        android:id="@+id/resultsPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FF121212"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/resultsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF4CAF50"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"
+            tools:text="PASSED" />
+
+        <TextView
+            android:id="@+id/resultsActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actions: 100"
+            android:textColor="#FFB0B0B0"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/resultsQuestions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Questions: 80"
+            android:textColor="#FFB0B0B0"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/resultsTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: 92"
+            android:textColor="#FFFFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/resultsMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FF808080"
+            android:textSize="14sp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            tools:text="Great job! You handled the fire emergency effectively." />
+
+        <Button
+            android:id="@+id/viewCertificateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Certificate"
+            android:textColor="#FFFFFFFF"
+            android:backgroundTint="#FF4CAF50"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/retryResultsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:textColor="#FFFFFFFF"
+            android:backgroundTint="#FF2196F3"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textColor="#FFFFFFFF"
+            android:backgroundTint="#FF1E1E1E" />
+    </LinearLayout>
+
+</FrameLayout>

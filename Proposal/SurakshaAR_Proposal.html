@@ -1,0 +1,1463 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SurakshaAR â€” Final Version Proposal</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --bg0:#050b14; --bg1:#0a1524; --bg2:#0e1f33;
+    --glass:rgba(255,255,255,.055); --line:rgba(120,200,255,.22);
+    --cyan:#22d3ee; --sky:#38bdf8; --blue:#3b82f6;
+    --green:#34d399; --lime:#a3e635; --amber:#fbbf24;
+    --violet:#a78bfa; --pink:#f472b6; --red:#f87171;
+    --txt:#e8f1fb; --mut:#9db4cc; --dim:#6b8299;
+  }
+  html,body{ background:#000; font-family:"Segoe UI",system-ui,Arial,sans-serif; color:var(--txt); -webkit-font-smoothing:antialiased; }
+  .page{
+    width:210mm; height:297mm; position:relative; overflow:hidden;
+    background:
+      radial-gradient(1100px 700px at 85% -10%, rgba(34,211,238,.16), transparent 60%),
+      radial-gradient(900px 650px at -10% 110%, rgba(59,130,246,.14), transparent 55%),
+      radial-gradient(700px 500px at 50% 50%, rgba(16,185,129,.05), transparent 70%),
+      linear-gradient(160deg,var(--bg0) 0%,var(--bg1) 45%,#0b1a2b 100%);
+    page-break-after:always; break-after:page;
+    print-color-adjust:exact; -webkit-print-color-adjust:exact;
+  }
+  .page:last-child{ page-break-after:auto; break-after:auto; }
+  .grid-bg::before{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.35;
+    background-image:linear-gradient(rgba(80,160,220,.06) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(80,160,220,.06) 1px,transparent 1px);
+    background-size:34px 34px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 85%);
+            mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 85%);
+  }
+  .wrap{ position:relative; z-index:2; padding:12mm 13mm 15mm; height:100%; display:flex; flex-direction:column; }
+  .kicker{ display:inline-flex; align-items:center; gap:8px; font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--cyan); font-weight:600; }
+  .kicker::before{ content:""; width:26px; height:2px; background:linear-gradient(90deg,var(--cyan),transparent); border-radius:2px; }
+  h1{ font-size:40px; line-height:1.12; font-weight:700; letter-spacing:-.5px; }
+  h2{ font-size:25px; font-weight:700; letter-spacing:-.3px; margin:4px 0 6px; }
+  h3{ font-size:14px; font-weight:700; letter-spacing:.02em; }
+  .sub{ color:var(--mut); font-size:13px; line-height:1.6; }
+  .accent{ background:linear-gradient(90deg,#67e8f9,#34d399 55%,#a3e635); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .phead{ display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:12px; }
+  .phead .num{ font-size:11px; letter-spacing:.22em; color:var(--dim); text-transform:uppercase; }
+  .card{ background:var(--glass); border:1px solid rgba(140,210,255,.16); border-radius:16px; }
+  .card.pad{ padding:13px 15px; }
+  .chip{ display:inline-block; padding:4px 10px; border-radius:999px; font-size:10.5px; font-weight:600; letter-spacing:.06em; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:var(--mut); }
+  .chip.c{ color:#67e8f9; border-color:rgba(103,232,249,.35); background:rgba(34,211,238,.1); }
+  .chip.g{ color:#6ee7b7; border-color:rgba(110,231,183,.35); background:rgba(52,211,153,.1); }
+  .chip.a{ color:#fcd34d; border-color:rgba(252,211,77,.35); background:rgba(251,191,36,.1); }
+  .chip.v{ color:#c4b5fd; border-color:rgba(196,181,253,.35); background:rgba(167,139,250,.1); }
+  .foot{ position:absolute; left:13mm; right:13mm; bottom:7mm; display:flex; justify-content:space-between; font-size:9.5px; color:var(--dim); letter-spacing:.14em; text-transform:uppercase; z-index:3; }
+  ul.ticks{ list-style:none; }
+  ul.ticks li{ position:relative; padding-left:18px; margin:6px 0; font-size:12px; color:var(--mut); line-height:1.45; }
+  ul.ticks li::before{ content:""; position:absolute; left:0; top:7px; width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--green)); box-shadow:0 0 8px rgba(34,211,238,.8); }
+  table{ width:100%; border-collapse:collapse; font-size:11px; }
+  th{ text-align:left; padding:7px 9px; color:#7dd3fc; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; background:rgba(56,189,248,.08); border-bottom:1px solid var(--line); }
+  td{ padding:7px 9px; border-bottom:1px solid rgba(255,255,255,.06); color:var(--mut); vertical-align:top; }
+  td strong{ color:var(--txt); font-weight:600; }
+  .status{ font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+  .s-ok{ background:rgba(52,211,153,.15); color:#6ee7b7; border:1px solid rgba(52,211,153,.4); }
+  .s-new{ background:rgba(56,189,248,.15); color:#7dd3fc; border:1px solid rgba(56,189,248,.4); }
+  .s-fix{ background:rgba(251,191,36,.15); color:#fcd34d; border:1px solid rgba(251,191,36,.4); }
+  .hero-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:24px; }
+  .hstat{ background:var(--glass); border:1px solid rgba(140,210,255,.18); border-radius:14px; padding:12px 10px; text-align:center; }
+  .hstat b{ display:block; font-size:22px; font-weight:700; background:linear-gradient(90deg,#67e8f9,#a3e635); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hstat span{ font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+  .cols2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .cols3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; }
+  .cols4{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .stack{ display:flex; flex-direction:column; gap:10px; }
+  .mini-t{ font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#7dd3fc; margin-bottom:6px; font-weight:700; }
+  .big-diagram{ width:100%; flex:1; min-height:0; }
+  svg text{ font-family:"Segoe UI",system-ui,Arial,sans-serif; }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:10px; color:var(--dim); letter-spacing:.06em; }
+  .legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .glowline{ height:2px; background:linear-gradient(90deg,transparent,var(--cyan),var(--green),transparent); opacity:.55; border-radius:2px; margin:10px 0; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<section class="page grid-bg">
+  <div class="wrap" style="align-items:flex-start; justify-content:center;">
+    <svg width="74" height="74" viewBox="0 0 74 74" fill="none" style="margin-bottom:20px; filter:drop-shadow(0 0 18px rgba(34,211,238,.55));">
+      <path d="M37 4 L66 16 V38 C66 54 54 65 37 70 C20 65 8 54 8 38 V16 Z" stroke="url(#lg1)" stroke-width="2.5" fill="rgba(34,211,238,.07)"/>
+      <path d="M37 22 L51 30 V46 L37 54 L23 46 V30 Z" stroke="#34d399" stroke-width="2" fill="rgba(52,211,153,.12)"/>
+      <path d="M37 22 V54 M23 30 L37 38 L51 30" stroke="#67e8f9" stroke-width="1.4" opacity=".9"/>
+      <defs><linearGradient id="lg1" x1="8" y1="4" x2="66" y2="70"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs>
+    </svg>
+    <div class="kicker">SIH 26041 Â· Government of Jharkhand Â· Final Build Proposal</div>
+    <h1 style="margin-top:14px;">Suraksha<span class="accent">AR</span><br>
+      <span style="font-size:25px; font-weight:600; color:var(--mut); letter-spacing:0;">AR-Based Vocational Safety Training Platform</span>
+    </h1>
+    <p class="sub" style="max-width:155mm; margin-top:14px;">
+      â€œReal Hazards. Real Decisions. Safer Tomorrow.â€ â€” A complete proposal for the final version of the
+      augmented-reality safety trainer for Jharkhandâ€™s mining &amp; manufacturing workforce: vision,
+      technology stack, internal engineering architecture, end-to-end workflows, and delivery roadmap.
+    </p>
+    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+      <span class="chip c">Android Â· Kotlin Â· ARCore</span>
+      <span class="chip g">ASP.NET Core 8 Â· MongoDB</span>
+      <span class="chip v">Unity 6 Â· AR Foundation</span>
+      <span class="chip a">Offline-First Â· 7 Languages</span>
+      <span class="chip">QR Certificates Â· Hash-Chain</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><b>5</b><span>Safety Domains</span></div>
+      <div class="hstat"><b>3</b><span>User Roles</span></div>
+      <div class="hstat"><b>7</b><span>Languages</span></div>
+      <div class="hstat"><b>100%</b><span>Offline Capable</span></div>
+    </div>
+    <div style="margin-top:32px; display:flex; gap:26px; font-size:11px; color:var(--dim); letter-spacing:.16em; text-transform:uppercase;">
+      <span>Proposal v1.0 â€” Final Version</span><span>September 2026</span><span>Workspace: E:\SAFE</span>
+    </div>
+  </div>
+  <div class="foot"><span>SurakshaAR Â· Final Proposal</span><span>01</span></div>
+</section>
+<!-- ================= 02 VISION ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">01 Â· Executive Vision</div><h2>The Final App â€” What We Ship</h2></div>
+      <div class="num">Vision â†’ Product</div>
+    </div>
+    <div class="cols2" style="gap:13px;">
+      <div class="card pad">
+        <div class="mini-t">The Problem</div>
+        <p class="sub" style="font-size:12px;">Jharkhand recorded <b style="color:#f87171;">48 fatal mine accidents</b> in 2022â€“23, many involving workers with under 30 days of orientation. Classroom retention drops below 20% in one week. Live drills disrupt production. VR headsets donâ€™t reach small mines. No regional-language digital safety platform exists.</p>
+        <ul class="ticks" style="margin-top:6px;">
+          <li>Young tribal recruits, limited digital literacy</li>
+          <li>Mid-range Android phones (10+), poor connectivity</li>
+          <li>Hindi &amp; Santali mandatory; 7 languages total</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <div class="mini-t">The Final Solution</div>
+        <p class="sub" style="font-size:12px;">A phone-first <b style="color:#67e8f9;">AR safety simulator</b>: the worker scans a QR checkpoint, a 3D hazard (fire, gas leakâ€¦) appears in the real workspace, a live HUD demands action, inaction escalates danger, and a scored assessment issues a verifiable certificate â€” fully usable offline.</p>
+        <ul class="ticks" style="margin-top:6px;">
+          <li>3-role ecosystem: Worker Â· Manager Â· Admin</li>
+          <li>One backend, one mobile client, one web dashboard</li>
+          <li>Trust chain: signed QR certificates, public verify</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mini-t" style="margin-top:14px;">Final Product Pillars</div>
+    <div class="cols4">
+      <div class="card pad" style="border-color:rgba(34,211,238,.35);">
+        <h3 style="color:#67e8f9;">01 Â· Real AR Training</h3>
+        <p class="sub" style="font-size:11px; margin-top:5px;">Plane detection, anchored 3D hazards, HUD telemetry, evacuation arrows â€” real camera, real risk response.</p>
+      </div>
+      <div class="card pad" style="border-color:rgba(52,211,153,.35);">
+        <h3 style="color:#6ee7b7;">02 Â· Escalation Engine</h3>
+        <p class="sub" style="font-size:11px; margin-top:5px;">Inaction worsens the scene: Normal â†’ Minor â†’ Moderate â†’ Severe â†’ Critical with score penalties &amp; auto-fail.</p>
+      </div>
+      <div class="card pad" style="border-color:rgba(167,139,250,.35);">
+        <h3 style="color:#c4b5fd;">03 Â· Verifiable Proof</h3>
+        <p class="sub" style="font-size:11px; margin-top:5px;">60/40 action+quiz scoring, signed certificates, QR payloads, hash-chain ledger, offline verification.</p>
+      </div>
+      <div class="card pad" style="border-color:rgba(251,191,36,.35);">
+        <h3 style="color:#fcd34d;">04 Â· Offline-First</h3>
+        <p class="sub" style="font-size:11px; margin-top:5px;">Full training without internet; queued sync of results &amp; escalations when the network returns.</p>
+      </div>
+    </div>
+
+    <div class="mini-t" style="margin-top:14px;">Target Experience â€” Final App Loop</div>
+    <div class="card pad" style="flex:1; min-height:0;">
+      <svg viewBox="0 0 720 300" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#38bdf8"/>
+          </marker>
+          <marker id="arrY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#fbbf24"/>
+          </marker>
+          <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#34d399"/>
+          </marker>
+        </defs>
+        <!-- main row -->
+        <g>
+          <rect x="16" y="40" width="118" height="66" rx="14" fill="rgba(34,211,238,.12)" stroke="#22d3ee"/>
+          <text x="75" y="68" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">SCAN QR</text>
+          <text x="75" y="88" text-anchor="middle" fill="#9db4cc" font-size="10">checkpoint zone</text>
+
+          <rect x="162" y="40" width="118" height="66" rx="14" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/>
+          <text x="221" y="68" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">AR SESSION</text>
+          <text x="221" y="88" text-anchor="middle" fill="#9db4cc" font-size="10">hazard appears</text>
+
+          <rect x="308" y="40" width="118" height="66" rx="14" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+          <text x="367" y="68" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">HUD + ACT</text>
+          <text x="367" y="88" text-anchor="middle" fill="#9db4cc" font-size="10">timer running</text>
+
+          <rect x="454" y="40" width="118" height="66" rx="14" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/>
+          <text x="513" y="68" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">ESCALATE?</text>
+          <text x="513" y="88" text-anchor="middle" fill="#9db4cc" font-size="10">if no action</text>
+
+          <rect x="600" y="40" width="104" height="66" rx="14" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+          <text x="652" y="68" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">SCORE</text>
+          <text x="652" y="88" text-anchor="middle" fill="#9db4cc" font-size="9.5">60% act Â· 40% quiz</text>
+
+          <line x1="134" y1="73" x2="160" y2="73" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="280" y1="73" x2="306" y2="73" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="426" y1="73" x2="452" y2="73" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="572" y1="73" x2="598" y2="73" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr)"/>
+        </g>
+        <!-- escalation feedback loop -->
+        <path d="M513 106 L513 150 Q513 166 497 166 L385 166 Q369 166 369 150 L369 108" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrY)"/>
+        <text x="441" y="184" text-anchor="middle" fill="#fcd34d" font-size="10.5">severity â†‘ Â· penalties âˆ’10 / âˆ’25 / âˆ’50% Â· Critical = auto-fail</text>
+
+        <!-- bottom flow -->
+        <g>
+          <rect x="70" y="230" width="150" height="40" rx="12" fill="rgba(244,114,182,.1)" stroke="#f472b6"/>
+          <text x="145" y="255" text-anchor="middle" fill="#f9a8d4" font-size="12" font-weight="600">ASSESSMENT QUIZ</text>
+
+          <rect x="280" y="230" width="160" height="40" rx="12" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+          <text x="360" y="255" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="600">CERTIFICATE + QR</text>
+
+          <rect x="500" y="230" width="150" height="40" rx="12" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+          <text x="575" y="255" text-anchor="middle" fill="#7dd3fc" font-size="12" font-weight="600">SYNC (IF ONLINE)</text>
+
+          <line x1="220" y1="250" x2="278" y2="250" stroke="#f472b6" stroke-width="1.8" marker-end="url(#arr)"/>
+          <line x1="440" y1="250" x2="498" y2="250" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrG)"/>
+          <path d="M652 106 L652 160 Q652 210 640 210 L640 228" fill="none" stroke="#34d399" stroke-width="1.6" marker-end="url(#arrG)"/>
+          <path d="M145 230 L145 200 Q145 186 160 186 L300 186 Q312 186 312 174 L312 108" fill="none" stroke="#38bdf8" stroke-width="1.4" opacity=".55" marker-end="url(#arr)"/>
+        </g>
+        <text x="360" y="292" text-anchor="middle" fill="#6b8299" font-size="10">Full loop works with zero connectivity after first cache Â· results flush via outbox on reconnect</text>
+      </svg>
+    </div>
+  </div>
+  <div class="foot"><span>SurakshaAR Â· Executive Vision</span><span>02</span></div>
+</section>
+<!-- ================= 03 TECH STACK (hero, like reference image) ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">02 Â· Technology Architecture</div><h2>Internal Coding &amp; Technology Stack</h2></div>
+      <div class="num">Full-Stack AR Product</div>
+    </div>
+    <div class="big-diagram card" style="padding:8px;">
+      <svg viewBox="0 0 760 640" width="100%" height="100%">
+        <defs>
+          <linearGradient id="hubg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0ea5e9"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#34d399"/></linearGradient>
+          <radialGradient id="hubglow" cx="50%" cy="50%" r="50%"><stop stop-color="#22d3ee" stop-opacity=".55"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="4"/></filter>
+        </defs>
+
+        <!-- connector lines -->
+        <g stroke-width="1.8" fill="none" opacity=".85">
+          <path d="M380 320 L150 130" stroke="#38bdf8"/>
+          <path d="M380 320 L380 92" stroke="#a78bfa"/>
+          <path d="M380 320 L620 130" stroke="#34d399"/>
+          <path d="M380 320 L120 330" stroke="#fbbf24"/>
+          <path d="M380 320 L650 330" stroke="#f472b6"/>
+          <path d="M380 320 L200 545" stroke="#38bdf8"/>
+          <path d="M380 320 L560 545" stroke="#a78bfa"/>
+        </g>
+
+        <!-- HUB -->
+        <circle cx="380" cy="320" r="86" fill="url(#hubglow)" filter="url(#soft)"/>
+        <circle cx="380" cy="320" r="62" fill="rgba(6,18,32,.92)" stroke="url(#hubg)" stroke-width="2.5"/>
+        <circle cx="380" cy="320" r="72" fill="none" stroke="#22d3ee" stroke-width="1" opacity=".45"/>
+        <text x="380" y="308" text-anchor="middle" fill="#e8f1fb" font-size="13" font-weight="700">SURAKSHAAR</text>
+        <text x="380" y="326" text-anchor="middle" fill="#67e8f9" font-size="10.5" font-weight="600">FINAL STACK</text>
+        <text x="380" y="344" text-anchor="middle" fill="#9db4cc" font-size="8.5">Full-Stack AR Platform</text>
+
+        <!-- GROUP: Mobile client -->
+        <g>
+          <rect x="34" y="34" width="240" height="176" rx="18" fill="rgba(56,189,248,.07)" stroke="rgba(56,189,248,.5)" stroke-width="1.6"/>
+          <rect x="52" y="24" width="150" height="22" rx="11" fill="#0b1a2b" stroke="#38bdf8"/>
+          <text x="127" y="39" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="700" letter-spacing="1.5">MOBILE CLIENT</text>
+          <g>
+            <rect x="52" y="60" width="96" height="56" rx="12" fill="rgba(255,255,255,.06)" stroke="#38bdf8" stroke-width="1.4"/>
+            <rect x="64" y="72" width="32" height="32" rx="8" fill="url(#hubg)" opacity=".9"/>
+            <text x="80" y="93" text-anchor="middle" fill="#041018" font-size="13" font-weight="800">K</text>
+            <text x="126" y="86" text-anchor="middle" fill="#e8f1fb" font-size="11" font-weight="700">Kotlin</text>
+            <text x="126" y="102" text-anchor="middle" fill="#9db4cc" font-size="8.5">Jetpack Â· Retrofit</text>
+          </g>
+          <g>
+            <rect x="160" y="60" width="96" height="56" rx="12" fill="rgba(255,255,255,.06)" stroke="#34d399" stroke-width="1.4"/>
+            <circle cx="184" cy="88" r="15" fill="none" stroke="#34d399" stroke-width="2"/>
+            <path d="M177 88 l5 5 l9 -10" stroke="#34d399" stroke-width="2" fill="none"/>
+            <text x="226" y="86" text-anchor="middle" fill="#e8f1fb" font-size="11" font-weight="700">ARCore</text>
+            <text x="226" y="102" text-anchor="middle" fill="#9db4cc" font-size="8.5">SceneView Â· XR</text>
+          </g>
+          <g>
+            <rect x="52" y="130" width="64" height="30" rx="8" fill="rgba(167,139,250,.15)" stroke="#a78bfa"/><text x="84" y="149" text-anchor="middle" fill="#c4b5fd" font-size="10.5" font-weight="700">C# / Unity</text>
+            <rect x="124" y="130" width="64" height="30" rx="8" fill="rgba(251,191,36,.15)" stroke="#fbbf24"/><text x="156" y="149" text-anchor="middle" fill="#fcd34d" font-size="10.5" font-weight="700">Java</text>
+            <rect x="196" y="130" width="60" height="30" rx="8" fill="rgba(52,211,153,.15)" stroke="#34d399"/><text x="226" y="149" text-anchor="middle" fill="#6ee7b7" font-size="10.5" font-weight="700">Gradle</text>
+          </g>
+          <text x="154" y="186" text-anchor="middle" fill="#9db4cc" font-size="9.5">minSdk 28 Â· target 35 Â· AR training app</text>
+        </g>
+
+        <!-- GROUP: AR engine / Unity -->
+        <g>
+          <rect x="286" y="24" width="190" height="120" rx="18" fill="rgba(167,139,250,.07)" stroke="rgba(167,139,250,.5)" stroke-width="1.6"/>
+          <rect x="304" y="14" width="140" height="22" rx="11" fill="#0b1a2b" stroke="#a78bfa"/>
+          <text x="374" y="29" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="700" letter-spacing="1.5">AR ENGINE</text>
+          <circle cx="374" cy="82" r="30" fill="rgba(255,255,255,.05)" stroke="#a78bfa" stroke-width="1.8"/>
+          <path d="M360 70 L392 66 L386 98 L356 94 Z" fill="none" stroke="#c4b5fd" stroke-width="2"/>
+          <path d="M360 70 L374 84 L392 66 M374 84 L372 108" stroke="#a78bfa" stroke-width="1.6" fill="none"/>
+          <text x="374" y="128" text-anchor="middle" fill="#e8f1fb" font-size="10.5" font-weight="700">Unity 6 Â· AR Foundation</text>
+        </g>
+
+        <!-- GROUP: AR platform right -->
+        <g>
+          <rect x="520" y="34" width="210" height="160" rx="18" fill="rgba(52,211,153,.07)" stroke="rgba(52,211,153,.5)" stroke-width="1.6"/>
+          <rect x="546" y="24" width="150" height="22" rx="11" fill="#0b1a2b" stroke="#34d399"/>
+          <text x="621" y="39" text-anchor="middle" fill="#6ee7b7" font-size="10" font-weight="700" letter-spacing="1.5">AR PLATFORM</text>
+          <g>
+            <rect x="540" y="60" width="86" height="40" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+            <text x="583" y="78" text-anchor="middle" fill="#e8f1fb" font-size="10.5" font-weight="700">Plane detect</text>
+            <text x="583" y="92" text-anchor="middle" fill="#9db4cc" font-size="8.5">floor / surface</text>
+            <rect x="636" y="60" width="80" height="40" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+            <text x="676" y="78" text-anchor="middle" fill="#e8f1fb" font-size="10.5" font-weight="700">Depth</text>
+            <text x="676" y="92" text-anchor="middle" fill="#9db4cc" font-size="8.5">occlusion</text>
+            <rect x="540" y="110" width="86" height="40" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+            <text x="583" y="128" text-anchor="middle" fill="#e8f1fb" font-size="10.5" font-weight="700">Anchors</text>
+            <text x="583" y="142" text-anchor="middle" fill="#9db4cc" font-size="8.5">site mapping</text>
+            <rect x="636" y="110" width="80" height="40" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+            <text x="676" y="128" text-anchor="middle" fill="#e8f1fb" font-size="10.5" font-weight="700">QR / ML</text>
+            <text x="676" y="142" text-anchor="middle" fill="#9db4cc" font-size="8.5">checkpoints</text>
+          </g>
+          <text x="625" y="176" text-anchor="middle" fill="#9db4cc" font-size="9.5">Google ARCore Â· device camera pipeline</text>
+        </g>
+
+        <!-- GROUP: Backend left -->
+        <g>
+          <rect x="24" y="250" width="180" height="170" rx="18" fill="rgba(251,191,36,.07)" stroke="rgba(251,191,36,.5)" stroke-width="1.6"/>
+          <rect x="44" y="240" width="140" height="22" rx="11" fill="#0b1a2b" stroke="#fbbf24"/>
+          <text x="114" y="255" text-anchor="middle" fill="#fcd34d" font-size="10" font-weight="700" letter-spacing="1.5">BACKEND CORE</text>
+          <g font-size="10.5" font-weight="600">
+            <rect x="42" y="278" width="144" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="114" y="297" text-anchor="middle" fill="#e8f1fb">ASP.NET Core 8</text>
+            <rect x="42" y="316" width="144" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="114" y="335" text-anchor="middle" fill="#e8f1fb">REST Â· Controllers</text>
+            <rect x="42" y="354" width="144" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="114" y="373" text-anchor="middle" fill="#e8f1fb">JWT Â· BCrypt Â· RBAC</text>
+          </g>
+          <text x="114" y="404" text-anchor="middle" fill="#9db4cc" font-size="9">C# Â· DI singleton services</text>
+        </g>
+
+        <!-- GROUP: API right -->
+        <g>
+          <rect x="556" y="250" width="180" height="170" rx="18" fill="rgba(244,114,182,.07)" stroke="rgba(244,114,182,.5)" stroke-width="1.6"/>
+          <rect x="578" y="240" width="140" height="22" rx="11" fill="#0b1a2b" stroke="#f472b6"/>
+          <text x="648" y="255" text-anchor="middle" fill="#f9a8d4" font-size="10" font-weight="700" letter-spacing="1.5">API SURFACE</text>
+          <g font-size="10" font-weight="600">
+            <rect x="574" y="278" width="148" height="26" rx="7" fill="rgba(255,255,255,.05)" stroke="#f472b6"/><text x="648" y="295" text-anchor="middle" fill="#e8f1fb">/api/auth Â· login Â· OTP</text>
+            <rect x="574" y="310" width="148" height="26" rx="7" fill="rgba(255,255,255,.05)" stroke="#f472b6"/><text x="648" y="327" text-anchor="middle" fill="#e8f1fb">/api/training Â· modules</text>
+            <rect x="574" y="342" width="148" height="26" rx="7" fill="rgba(255,255,255,.05)" stroke="#f472b6"/><text x="648" y="359" text-anchor="middle" fill="#e8f1fb">/api/certificate Â· QR</text>
+            <rect x="574" y="374" width="148" height="26" rx="7" fill="rgba(255,255,255,.05)" stroke="#f472b6"/><text x="648" y="391" text-anchor="middle" fill="#e8f1fb">/api/worker Â· offline sync</text>
+          </g>
+        </g>
+
+        <!-- GROUP: Data bottom-left -->
+        <g>
+          <rect x="70" y="470" width="250" height="140" rx="18" fill="rgba(56,189,248,.07)" stroke="rgba(56,189,248,.5)" stroke-width="1.6"/>
+          <rect x="96" y="460" width="160" height="22" rx="11" fill="#0b1a2b" stroke="#38bdf8"/>
+          <text x="176" y="475" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="700" letter-spacing="1.5">DATA LAYER</text>
+          <g>
+            <ellipse cx="130" cy="530" rx="36" ry="14" fill="rgba(52,211,153,.25)" stroke="#34d399"/>
+            <rect x="94" y="530" width="72" height="40" fill="rgba(52,211,153,.12)" stroke="none"/>
+            <ellipse cx="130" cy="570" rx="36" ry="14" fill="rgba(52,211,153,.25)" stroke="#34d399"/>
+            <text x="130" y="554" text-anchor="middle" fill="#6ee7b7" font-size="10" font-weight="700">MongoDB</text>
+            <rect x="190" y="510" width="106" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="#38bdf8"/><text x="243" y="529" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="600">JWT secrets*</text>
+            <rect x="190" y="548" width="106" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="#38bdf8"/><text x="243" y="567" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="600">Hash-chain ledger</text>
+          </g>
+          <text x="195" y="596" text-anchor="middle" fill="#9db4cc" font-size="9">users Â· modules Â· certs Â· escalations</text>
+        </g>
+
+        <!-- GROUP: Trust bottom-right -->
+        <g>
+          <rect x="430" y="470" width="260" height="140" rx="18" fill="rgba(167,139,250,.07)" stroke="rgba(167,139,250,.5)" stroke-width="1.6"/>
+          <rect x="466" y="460" width="170" height="22" rx="11" fill="#0b1a2b" stroke="#a78bfa"/>
+          <text x="551" y="475" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="700" letter-spacing="1.5">TRUST &amp; DELIVERY</text>
+          <g>
+            <rect x="450" y="502" width="112" height="36" rx="9" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/><text x="506" y="518" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="700">Ed25519 signing</text><text x="506" y="532" text-anchor="middle" fill="#9db4cc" font-size="8.5">final: real keys</text>
+            <rect x="574" y="502" width="96" height="36" rx="9" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/><text x="622" y="518" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="700">QR verify</text><text x="622" y="532" text-anchor="middle" fill="#9db4cc" font-size="8.5">offline OK</text>
+            <rect x="450" y="548" width="112" height="36" rx="9" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/><text x="506" y="564" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="700">Polygon anchor</text><text x="506" y="578" text-anchor="middle" fill="#9db4cc" font-size="8.5">cert hash</text>
+            <rect x="574" y="548" width="96" height="36" rx="9" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/><text x="622" y="564" text-anchor="middle" fill="#e8f1fb" font-size="10" font-weight="700">Twilio SMS</text><text x="622" y="578" text-anchor="middle" fill="#9db4cc" font-size="8.5">OTP</text>
+          </g>
+        </g>
+
+        <text x="380" y="455" text-anchor="middle" fill="#67e8f9" font-size="9.5" letter-spacing="2" opacity=".8">SINGLE CLIENT Â· SINGLE API Â· SINGLE SOURCE OF TRUTH</text>
+      </svg>
+    </div>
+    <div class="legend" style="margin-top:8px;">
+      <span><i style="background:#38bdf8"></i>Mobile &amp; Data</span>
+      <span><i style="background:#a78bfa"></i>AR Engine &amp; Trust</span>
+      <span><i style="background:#34d399"></i>AR Platform</span>
+      <span><i style="background:#fbbf24"></i>Backend</span>
+      <span><i style="background:#f472b6"></i>APIs</span>
+      <span style="margin-left:auto;">* secrets move to environment / key-vault in final build</span>
+    </div>
+  </div>
+  <div class="foot"><span>Technology Architecture</span><span>03</span></div>
+</section>
+<!-- ================= 04 SYSTEM ARCHITECTURE ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">03 Â· System Architecture</div><h2>End-to-End Platform Architecture</h2></div>
+      <div class="num">Field â†’ Device â†’ API â†’ Data</div>
+    </div>
+    <div class="big-diagram card" style="padding:10px;">
+      <svg viewBox="0 0 760 660" width="100%" height="100%">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#67e8f9"/></marker>
+          <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6ee7b7"/></marker>
+        </defs>
+
+        <!-- lane 1 field -->
+        <rect x="16" y="16" width="728" height="96" rx="16" fill="rgba(251,191,36,.06)" stroke="rgba(251,191,36,.45)"/>
+        <text x="34" y="40" fill="#fcd34d" font-size="10.5" font-weight="700" letter-spacing="2">1 Â· FIELD ENVIRONMENT</text>
+        <g font-size="11">
+          <rect x="40" y="52" width="150" height="44" rx="10" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="115" y="71" text-anchor="middle" fill="#e8f1fb" font-weight="600">Coal mine / steel plant</text><text x="115" y="87" text-anchor="middle" fill="#9db4cc" font-size="9">training floor</text>
+          <rect x="210" y="52" width="150" height="44" rx="10" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="285" y="71" text-anchor="middle" fill="#e8f1fb" font-weight="600">QR checkpoint</text><text x="285" y="87" text-anchor="middle" fill="#9db4cc" font-size="9">physical zone marker</text>
+          <rect x="380" y="52" width="150" height="44" rx="10" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="455" y="71" text-anchor="middle" fill="#e8f1fb" font-weight="600">Safety officer</text><text x="455" y="87" text-anchor="middle" fill="#9db4cc" font-size="9">supervises session</text>
+          <rect x="550" y="52" width="170" height="44" rx="10" fill="rgba(255,255,255,.05)" stroke="#fbbf24"/><text x="635" y="71" text-anchor="middle" fill="#e8f1fb" font-weight="600">Worker + phone</text><text x="635" y="87" text-anchor="middle" fill="#9db4cc" font-size="9">Android 10+, ARM64</text>
+        </g>
+
+        <line x1="380" y1="112" x2="380" y2="138" stroke="#67e8f9" stroke-width="2" marker-end="url(#ar)"/>
+
+        <!-- lane 2 device -->
+        <rect x="16" y="144" width="728" height="180" rx="16" fill="rgba(56,189,248,.06)" stroke="rgba(56,189,248,.45)"/>
+        <text x="34" y="168" fill="#7dd3fc" font-size="10.5" font-weight="700" letter-spacing="2">2 Â· WORKER DEVICE â€” SurakshaAR APP</text>
+        <g font-size="10.5">
+          <rect x="40" y="182" width="164" height="124" rx="12" fill="rgba(255,255,255,.05)" stroke="#38bdf8"/>
+          <text x="122" y="202" text-anchor="middle" fill="#67e8f9" font-weight="700" font-size="11">PRESENTATION</text>
+          <text x="122" y="222" text-anchor="middle" fill="#e8f1fb">10 Activities (Kotlin)</text>
+          <text x="122" y="240" text-anchor="middle" fill="#e8f1fb">Role-based home</text>
+          <text x="122" y="258" text-anchor="middle" fill="#e8f1fb">HUD Â· Assessment UI</text>
+          <text x="122" y="276" text-anchor="middle" fill="#e8f1fb">7-language TTS</text>
+          <text x="122" y="294" text-anchor="middle" fill="#9db4cc" font-size="9">TalkBack accessible</text>
+
+          <rect x="216" y="182" width="164" height="124" rx="12" fill="rgba(255,255,255,.05)" stroke="#38bdf8"/>
+          <text x="298" y="202" text-anchor="middle" fill="#67e8f9" font-weight="700" font-size="11">DOMAIN / TRAINING</text>
+          <text x="298" y="222" text-anchor="middle" fill="#e8f1fb">Scenario player</text>
+          <text x="298" y="240" text-anchor="middle" fill="#e8f1fb">Escalation engine</text>
+          <text x="298" y="258" text-anchor="middle" fill="#e8f1fb">Scoring 60 / 40</text>
+          <text x="298" y="276" text-anchor="middle" fill="#e8f1fb">Certificate builder</text>
+          <text x="298" y="294" text-anchor="middle" fill="#9db4cc" font-size="9">port of Unity logic</text>
+
+          <rect x="392" y="182" width="164" height="124" rx="12" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/>
+          <text x="474" y="202" text-anchor="middle" fill="#c4b5fd" font-weight="700" font-size="11">AR RUNTIME</text>
+          <text x="474" y="222" text-anchor="middle" fill="#e8f1fb">ARCore session</text>
+          <text x="474" y="240" text-anchor="middle" fill="#e8f1fb">Plane + anchor map</text>
+          <text x="474" y="258" text-anchor="middle" fill="#e8f1fb">3D hazard prefabs</text>
+          <text x="474" y="276" text-anchor="middle" fill="#e8f1fb">Evacuation arrows</text>
+          <text x="474" y="294" text-anchor="middle" fill="#9db4cc" font-size="9">SceneView / Filament</text>
+
+          <rect x="568" y="182" width="156" height="124" rx="12" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+          <text x="646" y="202" text-anchor="middle" fill="#6ee7b7" font-weight="700" font-size="11">DATA (LOCAL)</text>
+          <text x="646" y="222" text-anchor="middle" fill="#e8f1fb">Room DB (final)</text>
+          <text x="646" y="240" text-anchor="middle" fill="#e8f1fb">Sync outbox queue</text>
+          <text x="646" y="258" text-anchor="middle" fill="#e8f1fb">Module cache</text>
+          <text x="646" y="276" text-anchor="middle" fill="#e8f1fb">Cert wallet (JSON)</text>
+          <text x="646" y="294" text-anchor="middle" fill="#9db4cc" font-size="9">encrypted prefs</text>
+        </g>
+
+        <line x1="380" y1="324" x2="380" y2="350" stroke="#67e8f9" stroke-width="2" marker-end="url(#ar)"/>
+        <text x="396" y="342" fill="#9db4cc" font-size="9.5">HTTPS Â· REST/JSON Â· JWT bearer (when online)</text>
+
+        <!-- lane 3 backend -->
+        <rect x="16" y="356" width="728" height="150" rx="16" fill="rgba(167,139,250,.06)" stroke="rgba(167,139,250,.45)"/>
+        <text x="34" y="380" fill="#c4b5fd" font-size="10.5" font-weight="700" letter-spacing="2">3 Â· BACKEND â€” ASP.NET CORE 8 (:5000)</text>
+        <g font-size="10.5">
+          <rect x="40" y="394" width="132" height="98" rx="12" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/>
+          <text x="106" y="414" text-anchor="middle" fill="#e8f1fb" font-weight="700">Gateway</text>
+          <text x="106" y="434" text-anchor="middle" fill="#9db4cc" font-size="9.5">CORS Â· Swagger(dev)</text>
+          <text x="106" y="452" text-anchor="middle" fill="#9db4cc" font-size="9.5">JWT middleware</text>
+          <text x="106" y="470" text-anchor="middle" fill="#9db4cc" font-size="9.5">Static admin SPA</text>
+          <text x="106" y="488" text-anchor="middle" fill="#9db4cc" font-size="9.5">/health</text>
+
+          <rect x="184" y="394" width="180" height="98" rx="12" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/>
+          <text x="274" y="414" text-anchor="middle" fill="#e8f1fb" font-weight="700">Controllers (7)</text>
+          <text x="274" y="434" text-anchor="middle" fill="#9db4cc" font-size="9.5">Auth Â· Admin Â· Manager</text>
+          <text x="274" y="452" text-anchor="middle" fill="#9db4cc" font-size="9.5">Worker Â· Training</text>
+          <text x="274" y="470" text-anchor="middle" fill="#9db4cc" font-size="9.5">Assessment Â· Certificate</text>
+          <text x="274" y="488" text-anchor="middle" fill="#9db4cc" font-size="9.5">policy-guarded routes</text>
+
+          <rect x="376" y="394" width="180" height="98" rx="12" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/>
+          <text x="466" y="414" text-anchor="middle" fill="#e8f1fb" font-weight="700">Services (7)</text>
+          <text x="466" y="434" text-anchor="middle" fill="#9db4cc" font-size="9.5">Auth Â· Mongo Â· OTP</text>
+          <text x="466" y="452" text-anchor="middle" fill="#9db4cc" font-size="9.5">Scenario Â· Escalation</text>
+          <text x="466" y="470" text-anchor="middle" fill="#9db4cc" font-size="9.5">Blockchain Â· SMS</text>
+          <text x="466" y="488" text-anchor="middle" fill="#9db4cc" font-size="9.5">singleton DI</text>
+
+          <rect x="568" y="394" width="156" height="98" rx="12" fill="rgba(255,255,255,.05)" stroke="#a78bfa"/>
+          <text x="646" y="414" text-anchor="middle" fill="#e8f1fb" font-weight="700">Shared models</text>
+          <text x="646" y="434" text-anchor="middle" fill="#9db4cc" font-size="9.5">SurakshaAR.Shared</text>
+          <text x="646" y="452" text-anchor="middle" fill="#9db4cc" font-size="9.5">20 entities / DTOs</text>
+          <text x="646" y="470" text-anchor="middle" fill="#9db4cc" font-size="9.5">single contract</text>
+          <text x="646" y="488" text-anchor="middle" fill="#9db4cc" font-size="9.5">C# source of truth</text>
+        </g>
+
+        <line x1="380" y1="506" x2="380" y2="532" stroke="#6ee7b7" stroke-width="2" marker-end="url(#ag)"/>
+
+        <!-- lane 4 data + external -->
+        <rect x="16" y="538" width="352" height="106" rx="16" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.45)"/>
+        <text x="34" y="560" fill="#6ee7b7" font-size="10.5" font-weight="700" letter-spacing="2">4 Â· PRIMARY DATA</text>
+        <g font-size="10.5">
+          <rect x="34" y="572" width="150" height="54" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+          <text x="109" y="594" text-anchor="middle" fill="#e8f1fb" font-weight="700">MongoDB</text>
+          <text x="109" y="612" text-anchor="middle" fill="#9db4cc" font-size="9">10 collections Â· indexed</text>
+          <rect x="196" y="572" width="150" height="54" rx="10" fill="rgba(255,255,255,.05)" stroke="#34d399"/>
+          <text x="271" y="594" text-anchor="middle" fill="#e8f1fb" font-weight="700">blockchain coll.</text>
+          <text x="271" y="612" text-anchor="middle" fill="#9db4cc" font-size="9">SHA-256 hash chain</text>
+        </g>
+
+        <rect x="384" y="538" width="360" height="106" rx="16" fill="rgba(244,114,182,.06)" stroke="rgba(244,114,182,.45)"/>
+        <text x="402" y="560" fill="#f9a8d4" font-size="10.5" font-weight="700" letter-spacing="2">5 Â· EXTERNAL / SIDE CHANNELS</text>
+        <g font-size="10.5">
+          <rect x="402" y="572" width="106" height="54" rx="10" fill="rgba(255,255,255,.05)" stroke="#f472b6"/>
+          <text x="455" y="594" text-anchor="middle" fill="#e8f1fb" font-weight="700">Twilio</text>
+          <text x="455" y="612" text-anchor="middle" fill="#9db4cc" font-size="9">OTP SMS</text>
+          <rect x="518" y="572" width="106" height="54" rx="10" fill="rgba(255,255,255,.05)" stroke="#f472b6"/>
+          <text x="571" y="594" text-anchor="middle" fill="#e8f1fb" font-weight="700">Polygon</text>
+          <text x="571" y="612" text-anchor="middle" fill="#9db4cc" font-size="9">cert hash anchor</text>
+          <rect x="634" y="572" width="94" height="54" rx="10" fill="rgba(255,255,255,.05)" stroke="#f472b6"/>
+          <text x="681" y="594" text-anchor="middle" fill="#e8f1fb" font-weight="700">Admin SPA</text>
+          <text x="681" y="612" text-anchor="middle" fill="#9db4cc" font-size="9">:5000/ root</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card pad" style="margin-top:10px; display:flex; gap:16px;">
+      <div style="flex:1;"><div class="mini-t">Online path</div><p class="sub" style="font-size:11px;">App â‡„ REST with JWT; every write lands in Mongo; certificates &amp; escalations also appended to the hash chain.</p></div>
+      <div style="flex:1;"><div class="mini-t">Offline path</div><p class="sub" style="font-size:11px;">Training runs from cached modules; results &amp; escalations queue in an outbox and flush via <b>/worker/online/sync</b> on reconnect.</p></div>
+      <div style="flex:1;"><div class="mini-t">Verify path</div><p class="sub" style="font-size:11px;">Anyone scans a certificate QR â†’ <b>/certificate/verify</b> (anonymous) â†’ validity, score, module â€” no login required.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>System Architecture</span><span>04</span></div>
+</section>
+<!-- ================= 05 INTERNAL ARCH ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">04 Â· Internal Architecture</div><h2>Inside the Code â€” Backend &amp; App</h2></div>
+      <div class="num">Layered Â· Feature-Aligned</div>
+    </div>
+    <div class="cols2" style="gap:12px; flex:1;">
+      <!-- backend internals -->
+      <div class="card" style="padding:13px; display:flex; flex-direction:column;">
+        <div class="mini-t">Backend Internal Layering (C# / .NET 8)</div>
+        <svg viewBox="0 0 350 560" width="100%" height="100%" style="flex:1;">
+          <defs>
+            <marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7dd3fc"/></marker>
+          </defs>
+          <text x="14" y="20" fill="#7dd3fc" font-size="9.5" font-weight="700" letter-spacing="1.5">REQUEST PIPELINE</text>
+          <g font-size="10">
+            <rect x="14" y="30" width="322" height="34" rx="9" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="175" y="51" text-anchor="middle" fill="#e8f1fb" font-weight="600">HTTP :5000 â†’ UseCors â†’ StaticFiles â†’ AuthN â†’ AuthZ</text>
+            <line x1="175" y1="64" x2="175" y2="78" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+
+            <rect x="14" y="82" width="152" height="34" rx="9" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+            <text x="90" y="103" text-anchor="middle" fill="#e8f1fb" font-weight="600">Controller [Route api/â€¦]</text>
+            <rect x="184" y="82" width="152" height="34" rx="9" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+            <text x="260" y="103" text-anchor="middle" fill="#e8f1fb" font-weight="600">Policy: AdminOnly etc.</text>
+            <line x1="175" y1="116" x2="175" y2="130" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+
+            <rect x="14" y="134" width="322" height="34" rx="9" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+            <text x="175" y="155" text-anchor="middle" fill="#e8f1fb" font-weight="600">DTO bind â†’ validate â†’ claim checks (self-or-admin)</text>
+            <line x1="175" y1="168" x2="175" y2="182" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+
+            <rect x="14" y="186" width="322" height="34" rx="9" fill="rgba(244,114,182,.1)" stroke="#f472b6"/>
+            <text x="175" y="207" text-anchor="middle" fill="#e8f1fb" font-weight="600">Service (singleton) â€” business rules</text>
+            <line x1="175" y1="220" x2="175" y2="234" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+
+            <rect x="14" y="238" width="152" height="34" rx="9" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="90" y="259" text-anchor="middle" fill="#e8f1fb" font-weight="600">MongoService.Coll&lt;T&gt;</text>
+            <rect x="184" y="238" width="152" height="34" rx="9" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="260" y="259" text-anchor="middle" fill="#e8f1fb" font-weight="600">BlockchainService (chain)</text>
+            <line x1="175" y1="272" x2="175" y2="286" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+            <rect x="14" y="290" width="322" height="34" rx="9" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+            <text x="175" y="311" text-anchor="middle" fill="#e8f1fb" font-weight="600">MongoDB Â«SurakshaARÂ» â€” persist + index</text>
+            <line x1="175" y1="324" x2="175" y2="338" stroke="#7dd3fc" stroke-width="1.6" marker-end="url(#b1)"/>
+            <rect x="14" y="342" width="322" height="34" rx="9" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="175" y="363" text-anchor="middle" fill="#e8f1fb" font-weight="600">JSON response â†’ client</text>
+          </g>
+          <text x="14" y="404" fill="#7dd3fc" font-size="9.5" font-weight="700" letter-spacing="1.5">PROJECT MAP</text>
+          <g font-size="9.5" fill="#9db4cc">
+            <text x="14" y="424">Backend/</text>
+            <text x="34" y="442">Program.cs â€” pipeline, DI, JWT, policies</text>
+            <text x="34" y="458">Controllers/ Ã—7 â€” HTTP surface</text>
+            <text x="34" y="474">Services/ Ã—7 â€” Auth Mongo OTP Scenario</text>
+            <text x="46" y="490">Escalation Blockchain Sms</text>
+            <text x="34" y="506">wwwroot/admin/ â€” vanilla-JS dashboard</text>
+            <text x="34" y="522">Config/MongoConfig Â· appsettings.json</text>
+            <text x="14" y="544" fill="#67e8f9">Shared/Models.cs â€” 20 entities (single contract)</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- android internals -->
+      <div class="card" style="padding:13px; display:flex; flex-direction:column;">
+        <div class="mini-t">Mobile App Internal Layering (Kotlin â€” Final)</div>
+        <svg viewBox="0 0 350 560" width="100%" height="100%" style="flex:1;">
+          <defs>
+            <marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6ee7b7"/></marker>
+          </defs>
+          <text x="14" y="20" fill="#6ee7b7" font-size="9.5" font-weight="700" letter-spacing="1.5">FINAL RUNTIME LAYERS</text>
+          <g font-size="10">
+            <rect x="14" y="30" width="322" height="52" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="175" y="52" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11">UI LAYER</text>
+            <text x="175" y="70" text-anchor="middle" fill="#9db4cc" font-size="9.5">Activities Â· XML layouts Â· role-based navigation Â· TTS hooks</text>
+            <line x1="175" y1="82" x2="175" y2="96" stroke="#6ee7b7" stroke-width="1.6" marker-end="url(#b2)"/>
+
+            <rect x="14" y="100" width="322" height="52" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+            <text x="175" y="122" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11">DOMAIN LAYER (new in final)</text>
+            <text x="175" y="140" text-anchor="middle" fill="#9db4cc" font-size="9.5">ScenarioPlayer Â· EscalationEngine Â· Scorer Â· CertComposer</text>
+            <line x1="175" y1="152" x2="175" y2="166" stroke="#6ee7b7" stroke-width="1.6" marker-end="url(#b2)"/>
+
+            <rect x="14" y="170" width="322" height="52" rx="10" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+            <text x="175" y="192" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11">AR LAYER</text>
+            <text x="175" y="210" text-anchor="middle" fill="#9db4cc" font-size="9.5">ARCore session Â· plane detect Â· anchors Â· prefab spawn Â· HUD</text>
+            <line x1="175" y1="222" x2="175" y2="236" stroke="#6ee7b7" stroke-width="1.6" marker-end="url(#b2)"/>
+
+            <rect x="14" y="240" width="322" height="52" rx="10" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+            <text x="175" y="262" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11">DATA LAYER (new in final)</text>
+            <text x="175" y="280" text-anchor="middle" fill="#9db4cc" font-size="9.5">Retrofit ApiService Â· Room cache Â· outbox sync Â· token store</text>
+            <line x1="175" y1="292" x2="175" y2="306" stroke="#6ee7b7" stroke-width="1.6" marker-end="url(#b2)"/>
+
+            <rect x="14" y="310" width="322" height="52" rx="10" fill="rgba(244,114,182,.1)" stroke="#f472b6"/>
+            <text x="175" y="332" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11">NETWORK</text>
+            <text x="175" y="350" text-anchor="middle" fill="#9db4cc" font-size="9.5">OkHttp Â· JWT interceptor Â· base URL discovery Â· gzip</text>
+          </g>
+          <text x="14" y="396" fill="#6ee7b7" font-size="9.5" font-weight="700" letter-spacing="1.5">FINAL BUILD DECISIONS</text>
+          <g font-size="9.8">
+            <rect x="14" y="408" width="322" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(52,211,153,.5)"/>
+            <text x="26" y="427" fill="#e8f1fb">One client â€” kill dual-frontend drift (native wins)</text>
+            <rect x="14" y="446" width="322" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(52,211,153,.5)"/>
+            <text x="26" y="465" fill="#e8f1fb">Port Unity training logic â†’ Kotlin domain layer</text>
+            <rect x="14" y="484" width="322" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(52,211,153,.5)"/>
+            <text x="26" y="503" fill="#e8f1fb">Room outbox for true offline sync</text>
+            <rect x="14" y="522" width="322" height="30" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(52,211,153,.5)"/>
+            <text x="26" y="541" fill="#e8f1fb">Shared models mirrored via codegen checklist</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Internal Architecture</span><span>05</span></div>
+</section>
+<!-- ================= 06 WORKFLOWS: training + escalation ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">05 Â· Core Workflows</div><h2>Training Session &amp; Escalation Engine</h2></div>
+      <div class="num">The Heart of the Product</div>
+    </div>
+
+    <div class="mini-t">A Â· AR Training Session Workflow</div>
+    <div class="card" style="padding:8px; height:255px;">
+      <svg viewBox="0 0 740 240" width="100%" height="100%">
+        <defs>
+          <marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#67e8f9"/></marker>
+        </defs>
+        <text x="8" y="24" fill="#6b8299" font-size="9">WORKER</text>
+        <text x="8" y="118" fill="#6b8299" font-size="9">APP</text>
+        <text x="8" y="210" fill="#6b8299" font-size="9">SERVER</text>
+        <line x1="8" y1="70" x2="730" y2="70" stroke="rgba(255,255,255,.07)"/>
+        <line x1="8" y1="164" x2="730" y2="164" stroke="rgba(255,255,255,.07)"/>
+
+        <g font-size="9.5">
+          <rect x="40" y="10" width="92" height="44" rx="10" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/><text x="86" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Open app</text><text x="86" y="45" text-anchor="middle" fill="#9db4cc" font-size="8.5">login / offline</text>
+          <rect x="210" y="10" width="92" height="44" rx="10" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/><text x="256" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Scan QR</text><text x="256" y="45" text-anchor="middle" fill="#9db4cc" font-size="8.5">checkpoint</text>
+          <rect x="390" y="10" width="110" height="44" rx="10" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/><text x="445" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Take action</text><text x="445" y="45" text-anchor="middle" fill="#9db4cc" font-size="8.5">extinguish / evac</text>
+          <rect x="600" y="10" width="100" height="44" rx="10" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/><text x="650" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Quiz + result</text><text x="650" y="45" text-anchor="middle" fill="#9db4cc" font-size="8.5">pass â‰¥ 70</text>
+        </g>
+        <g font-size="9.5">
+          <rect x="40" y="88" width="92" height="56" rx="10" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/><text x="86" y="110" text-anchor="middle" fill="#e8f1fb" font-weight="600">Home by role</text><text x="86" y="126" text-anchor="middle" fill="#9db4cc" font-size="8.5">JWT stored</text>
+          <rect x="210" y="88" width="92" height="56" rx="10" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/><text x="256" y="106" text-anchor="middle" fill="#e8f1fb" font-weight="600">Decode QR</text><text x="256" y="122" text-anchor="middle" fill="#9db4cc" font-size="8.5">load module</text><text x="256" y="136" text-anchor="middle" fill="#9db4cc" font-size="8.5">cache/API</text>
+          <rect x="330" y="88" width="130" height="56" rx="10" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/><text x="395" y="106" text-anchor="middle" fill="#e8f1fb" font-weight="600">AR session starts</text><text x="395" y="122" text-anchor="middle" fill="#9db4cc" font-size="8.5">plane â†’ anchor â†’ spawn</text><text x="395" y="136" text-anchor="middle" fill="#9db4cc" font-size="8.5">HUD timer ON</text>
+          <rect x="600" y="88" width="100" height="56" rx="10" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/><text x="650" y="106" text-anchor="middle" fill="#e8f1fb" font-weight="600">Score =</text><text x="650" y="122" text-anchor="middle" fill="#9db4cc" font-size="8.5">0.6Â·act+0.4Â·quiz</text><text x="650" y="136" text-anchor="middle" fill="#9db4cc" font-size="8.5">cert if pass</text>
+        </g>
+        <g font-size="9.5">
+          <rect x="40" y="184" width="92" height="50" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/><text x="86" y="206" text-anchor="middle" fill="#e8f1fb" font-weight="600">/auth/login</text><text x="86" y="222" text-anchor="middle" fill="#9db4cc" font-size="8.5">JWT issued</text>
+          <rect x="210" y="184" width="92" height="50" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/><text x="256" y="206" text-anchor="middle" fill="#e8f1fb" font-weight="600">/training/â€¦</text><text x="256" y="222" text-anchor="middle" fill="#9db4cc" font-size="8.5">start attempt</text>
+          <rect x="600" y="184" width="100" height="50" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/><text x="650" y="206" text-anchor="middle" fill="#e8f1fb" font-weight="600">/certificate</text><text x="650" y="222" text-anchor="middle" fill="#9db4cc" font-size="8.5">sign + chain</text>
+        </g>
+        <g stroke="#67e8f9" stroke-width="1.5" fill="none">
+          <path d="M132 40 L208 88" marker-end="url(#f1)"/>
+          <path d="M302 40 L328 88" marker-end="url(#f1)"/>
+          <path d="M460 96 L598 40" marker-end="url(#f1)"/>
+          <path d="M86 54 L86 182" marker-end="url(#f1)" stroke-dasharray="4 3"/>
+          <path d="M256 144 L256 182" marker-end="url(#f1)"/>
+          <path d="M650 144 L650 182" marker-end="url(#f1)"/>
+        </g>
+        <text x="395" y="160" text-anchor="middle" fill="#fcd34d" font-size="9">idle â†’ escalation engine (below) Â· action â†’ resolve</text>
+      </svg>
+    </div>
+
+    <div class="mini-t" style="margin-top:11px;">B Â· Escalation State Machine â€” inaction worsens reality</div>
+    <div class="card" style="padding:8px; flex:1; min-height:0;">
+      <svg viewBox="0 0 740 300" width="100%" height="100%">
+        <defs>
+          <marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fcd34d"/></marker>
+          <marker id="eg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6ee7b7"/></marker>
+          <marker id="er" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f87171"/></marker>
+        </defs>
+        <g font-size="10">
+          <rect x="20" y="34" width="116" height="64" rx="14" fill="rgba(52,211,153,.14)" stroke="#34d399" stroke-width="1.6"/>
+          <text x="78" y="60" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="700">NORMAL</text>
+          <text x="78" y="78" text-anchor="middle" fill="#9db4cc" font-size="9">0â€“15s Â· green HUD</text>
+          <text x="78" y="92" text-anchor="middle" fill="#9db4cc" font-size="9">penalty 0%</text>
+
+          <rect x="176" y="34" width="116" height="64" rx="14" fill="rgba(251,191,36,.14)" stroke="#fbbf24" stroke-width="1.6"/>
+          <text x="234" y="60" text-anchor="middle" fill="#fcd34d" font-size="12" font-weight="700">MINOR</text>
+          <text x="234" y="78" text-anchor="middle" fill="#9db4cc" font-size="9">15â€“30s Â· yellow</text>
+          <text x="234" y="92" text-anchor="middle" fill="#9db4cc" font-size="9">penalty âˆ’10%</text>
+
+          <rect x="332" y="34" width="116" height="64" rx="14" fill="rgba(251,146,60,.14)" stroke="#fb923c" stroke-width="1.6"/>
+          <text x="390" y="60" text-anchor="middle" fill="#fdba74" font-size="12" font-weight="700">MODERATE</text>
+          <text x="390" y="78" text-anchor="middle" fill="#9db4cc" font-size="9">30â€“45s Â· flash</text>
+          <text x="390" y="92" text-anchor="middle" fill="#9db4cc" font-size="9">penalty âˆ’25%</text>
+
+          <rect x="488" y="34" width="116" height="64" rx="14" fill="rgba(248,113,113,.14)" stroke="#f87171" stroke-width="1.6"/>
+          <text x="546" y="60" text-anchor="middle" fill="#fca5a5" font-size="12" font-weight="700">SEVERE</text>
+          <text x="546" y="78" text-anchor="middle" fill="#9db4cc" font-size="9">45â€“60s Â· shake</text>
+          <text x="546" y="92" text-anchor="middle" fill="#9db4cc" font-size="9">penalty âˆ’50%</text>
+
+          <rect x="630" y="34" width="96" height="64" rx="14" fill="rgba(239,68,68,.22)" stroke="#ef4444" stroke-width="2"/>
+          <text x="678" y="60" text-anchor="middle" fill="#fecaca" font-size="12" font-weight="700">CRITICAL</text>
+          <text x="678" y="78" text-anchor="middle" fill="#9db4cc" font-size="9">60s+ Â· red</text>
+          <text x="678" y="92" text-anchor="middle" fill="#fca5a5" font-size="9" font-weight="700">AUTO-FAIL</text>
+        </g>
+        <g stroke="#fcd34d" stroke-width="1.8" fill="none">
+          <line x1="136" y1="66" x2="172" y2="66" marker-end="url(#e1)"/>
+          <line x1="292" y1="66" x2="328" y2="66" marker-end="url(#e1)"/>
+          <line x1="448" y1="66" x2="484" y2="66" marker-end="url(#e1)"/>
+          <line x1="604" y1="66" x2="626" y2="66" marker-end="url(#er)"/>
+        </g>
+        <text x="370" y="126" text-anchor="middle" fill="#fcd34d" font-size="10">timer ticks every 15s Â· visuals escalate (smokeâ†‘ gas%â†‘ arrows) Â· audio warnings Â· correct action anytime â†’ resolve</text>
+
+        <path d="M78 98 L78 170 L340 170" fill="none" stroke="#6ee7b7" stroke-width="1.6" marker-end="url(#eg)"/>
+        <path d="M234 98 L234 170" fill="none" stroke="#6ee7b7" stroke-width="1.6"/>
+        <path d="M546 98 L546 170" fill="none" stroke="#6ee7b7" stroke-width="1.6"/>
+        <rect x="340" y="152" width="210" height="36" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+        <text x="445" y="174" text-anchor="middle" fill="#6ee7b7" font-size="10.5" font-weight="700">CORRECT ACTION â†’ RESOLVED</text>
+        <path d="M678 98 L678 150 L554 170" fill="none" stroke="#f87171" stroke-width="1.6" marker-end="url(#er)"/>
+
+        <!-- sample scenario cards -->
+        <g font-size="9.5">
+          <rect x="20" y="210" width="340" height="70" rx="12" fill="rgba(255,255,255,.04)" stroke="rgba(248,113,113,.4)"/>
+          <text x="36" y="232" fill="#fca5a5" font-weight="700" font-size="10.5">FIRE SCENARIO</text>
+          <text x="36" y="250" fill="#9db4cc">0s fire appears â†’ 15s smoke grows â†’ 30s room fills</text>
+          <text x="36" y="266" fill="#9db4cc">â†’ 45s engulf â†’ 60s â€œFire too largeâ€ Â· score 0</text>
+
+          <rect x="380" y="210" width="340" height="70" rx="12" fill="rgba(255,255,255,.04)" stroke="rgba(52,211,153,.4)"/>
+          <text x="396" y="232" fill="#6ee7b7" font-weight="700" font-size="10.5">GAS LEAK SCENARIO</text>
+          <text x="396" y="250" fill="#9db4cc">0s 1.5% â†’ 15s 2.8% â†’ 30s 4.2% red perimeter</text>
+          <text x="396" y="266" fill="#9db4cc">â†’ 45s 6.1% evac arrows â†’ 60s critical fail</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="foot"><span>Core Workflows Â· Training</span><span>06</span></div>
+</section>
+<!-- ================= 07 WORKFLOWS: auth, offline, cert ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">06 Â· Platform Workflows</div><h2>Auth Â· Offline Sync Â· Certificate</h2></div>
+      <div class="num">Trust &amp; Continuity</div>
+    </div>
+
+    <div class="cols3" style="gap:10px; flex:1;">
+      <!-- AUTH -->
+      <div class="card" style="padding:12px; display:flex; flex-direction:column;">
+        <div class="mini-t" style="color:#7dd3fc;">A Â· Authentication</div>
+        <svg viewBox="0 0 230 540" width="100%" height="100%" style="flex:1;">
+          <defs><marker id="k1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7dd3fc"/></marker></defs>
+          <g font-size="9.3">
+            <rect x="16" y="10" width="198" height="40" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="28" text-anchor="middle" fill="#e8f1fb" font-weight="600">Worker opens app</text>
+            <text x="115" y="42" text-anchor="middle" fill="#9db4cc" font-size="8.5">ID + password (or cached)</text>
+            <line x1="115" y1="50" x2="115" y2="66" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="70" width="198" height="40" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="88" text-anchor="middle" fill="#e8f1fb" font-weight="600">POST /api/auth/login</text>
+            <text x="115" y="102" text-anchor="middle" fill="#9db4cc" font-size="8.5">BCrypt verify</text>
+            <line x1="115" y1="110" x2="115" y2="126" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="130" width="94" height="36" rx="10" fill="rgba(248,113,113,.12)" stroke="#f87171"/>
+            <text x="63" y="146" text-anchor="middle" fill="#fca5a5" font-weight="600">fail â†’ 401</text>
+            <text x="63" y="160" text-anchor="middle" fill="#9db4cc" font-size="8.5">retry</text>
+            <rect x="120" y="130" width="94" height="36" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="167" y="146" text-anchor="middle" fill="#6ee7b7" font-weight="600">ok â†’ JWT</text>
+            <text x="167" y="160" text-anchor="middle" fill="#9db4cc" font-size="8.5">24h expiry</text>
+            <line x1="167" y1="166" x2="167" y2="184" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="188" width="198" height="56" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+            <text x="115" y="208" text-anchor="middle" fill="#e8f1fb" font-weight="600">Claims baked in</text>
+            <text x="115" y="224" text-anchor="middle" fill="#9db4cc" font-size="8.5">sub=userId Â· role Â· name</text>
+            <text x="115" y="238" text-anchor="middle" fill="#9db4cc" font-size="8.5">companyId</text>
+            <line x1="115" y1="244" x2="115" y2="260" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="264" width="198" height="52" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="284" text-anchor="middle" fill="#e8f1fb" font-weight="600">Role â†’ home screen</text>
+            <text x="115" y="300" text-anchor="middle" fill="#9db4cc" font-size="8.5">Worker | Manager | Admin</text>
+            <text x="115" y="314" text-anchor="middle" fill="#9db4cc" font-size="8.5">no role picker (server decides)</text>
+            <line x1="115" y1="316" x2="115" y2="332" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="336" width="198" height="48" rx="10" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+            <text x="115" y="356" text-anchor="middle" fill="#e8f1fb" font-weight="600">Alt: phone OTP login</text>
+            <text x="115" y="372" text-anchor="middle" fill="#9db4cc" font-size="8.5">/otp/send â†’ /otp/verify â†’ JWT</text>
+            <line x1="115" y1="384" x2="115" y2="400" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="404" width="198" height="56" rx="10" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+            <text x="115" y="424" text-anchor="middle" fill="#e8f1fb" font-weight="600">RBAC on every call</text>
+            <text x="115" y="440" text-anchor="middle" fill="#9db4cc" font-size="8.5">AdminOnly Â· ManagerOrAdmin</text>
+            <text x="115" y="454" text-anchor="middle" fill="#9db4cc" font-size="8.5">AuthenticatedUser + self-check</text>
+            <line x1="115" y1="460" x2="115" y2="476" stroke="#7dd3fc" stroke-width="1.5" marker-end="url(#k1)"/>
+
+            <rect x="16" y="480" width="198" height="44" rx="10" fill="rgba(244,114,182,.1)" stroke="#f472b6"/>
+            <text x="115" y="500" text-anchor="middle" fill="#e8f1fb" font-weight="600">Refresh on re-login</text>
+            <text x="115" y="516" text-anchor="middle" fill="#9db4cc" font-size="8.5">rotated token replaces stored one</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- OFFLINE -->
+      <div class="card" style="padding:12px; display:flex; flex-direction:column;">
+        <div class="mini-t" style="color:#6ee7b7;">B Â· Offline-First Sync</div>
+        <svg viewBox="0 0 230 540" width="100%" height="100%" style="flex:1;">
+          <defs><marker id="k2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6ee7b7"/></marker></defs>
+          <g font-size="9.3">
+            <rect x="16" y="10" width="198" height="44" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="115" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Go online once</text>
+            <text x="115" y="46" text-anchor="middle" fill="#9db4cc" font-size="8.5">GET /worker/offline/{id}</text>
+            <line x1="115" y1="54" x2="115" y2="70" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="74" width="198" height="56" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="94" text-anchor="middle" fill="#e8f1fb" font-weight="600">Bundle cached locally</text>
+            <text x="115" y="110" text-anchor="middle" fill="#9db4cc" font-size="8.5">scenarios + site maps</text>
+            <text x="115" y="124" text-anchor="middle" fill="#9db4cc" font-size="8.5">questions + modules (Room)</text>
+            <line x1="115" y1="130" x2="115" y2="146" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="150" width="198" height="44" rx="10" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/>
+            <text x="115" y="170" text-anchor="middle" fill="#e8f1fb" font-weight="600">Airplane mode / no bars</text>
+            <text x="115" y="186" text-anchor="middle" fill="#9db4cc" font-size="8.5">train fully offline</text>
+            <line x1="115" y1="194" x2="115" y2="210" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="214" width="198" height="72" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+            <text x="115" y="236" text-anchor="middle" fill="#e8f1fb" font-weight="600">Outbox queue grows</text>
+            <text x="115" y="254" text-anchor="middle" fill="#9db4cc" font-size="8.5">Â· completed scenarios</text>
+            <text x="115" y="268" text-anchor="middle" fill="#9db4cc" font-size="8.5">Â· assessment results</text>
+            <text x="115" y="282" text-anchor="middle" fill="#9db4cc" font-size="8.5">Â· escalation reports</text>
+            <line x1="115" y1="286" x2="115" y2="302" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="306" width="198" height="44" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="326" text-anchor="middle" fill="#e8f1fb" font-weight="600">Network returns</text>
+            <text x="115" y="342" text-anchor="middle" fill="#9db4cc" font-size="8.5">connectivity callback fires</text>
+            <line x1="115" y1="350" x2="115" y2="366" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="370" width="198" height="56" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="115" y="390" text-anchor="middle" fill="#e8f1fb" font-weight="600">POST /worker/online/sync</text>
+            <text x="115" y="406" text-anchor="middle" fill="#9db4cc" font-size="8.5">idempotent batch upload</text>
+            <text x="115" y="420" text-anchor="middle" fill="#9db4cc" font-size="8.5">attemptId = dedupe key</text>
+            <line x1="115" y1="426" x2="115" y2="442" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="446" width="94" height="44" rx="10" fill="rgba(248,113,113,.12)" stroke="#f87171"/>
+            <text x="63" y="464" text-anchor="middle" fill="#fca5a5" font-weight="600">partial fail</text>
+            <text x="63" y="480" text-anchor="middle" fill="#9db4cc" font-size="8.5">retry remain.</text>
+            <rect x="120" y="446" width="94" height="44" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="167" y="464" text-anchor="middle" fill="#6ee7b7" font-weight="600">acked â†’ clear</text>
+            <text x="167" y="480" text-anchor="middle" fill="#9db4cc" font-size="8.5">outbox row</text>
+            <line x1="115" y1="490" x2="115" y2="506" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#k2)"/>
+
+            <rect x="16" y="510" width="198" height="26" rx="8" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="527" text-anchor="middle" fill="#e8f1fb" font-size="9.5" font-weight="600">Server marks scenarios Completed</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- CERT -->
+      <div class="card" style="padding:12px; display:flex; flex-direction:column;">
+        <div class="mini-t" style="color:#c4b5fd;">C Â· Certificate Lifecycle</div>
+        <svg viewBox="0 0 230 540" width="100%" height="100%" style="flex:1;">
+          <defs><marker id="k3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#c4b5fd"/></marker></defs>
+          <g font-size="9.3">
+            <rect x="16" y="10" width="198" height="44" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="115" y="30" text-anchor="middle" fill="#e8f1fb" font-weight="600">Score â‰¥ 70 &amp; criticals done</text>
+            <text x="115" y="46" text-anchor="middle" fill="#9db4cc" font-size="8.5">attempt status = passed</text>
+            <line x1="115" y1="54" x2="115" y2="70" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="74" width="198" height="56" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="94" text-anchor="middle" fill="#e8f1fb" font-weight="600">POST /certificate/generate</text>
+            <text x="115" y="110" text-anchor="middle" fill="#9db4cc" font-size="8.5">id CERT-yyyyMMdd-XXXXXXXX</text>
+            <text x="115" y="124" text-anchor="middle" fill="#9db4cc" font-size="8.5">payload: emp Â· module Â· score</text>
+            <line x1="115" y1="130" x2="115" y2="146" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="150" width="198" height="56" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+            <text x="115" y="170" text-anchor="middle" fill="#e8f1fb" font-weight="600">Sign (final: Ed25519)</text>
+            <text x="115" y="186" text-anchor="middle" fill="#9db4cc" font-size="8.5">private key stays server-side</text>
+            <text x="115" y="200" text-anchor="middle" fill="#9db4cc" font-size="8.5">hash = SHA-256(payload)</text>
+            <line x1="115" y1="206" x2="115" y2="222" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="226" width="198" height="52" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+            <text x="115" y="246" text-anchor="middle" fill="#e8f1fb" font-weight="600">QR payload built</text>
+            <text x="115" y="262" text-anchor="middle" fill="#9db4cc" font-size="8.5">SURAKSHA:{certId}:{hash}</text>
+            <text x="115" y="276" text-anchor="middle" fill="#9db4cc" font-size="8.5">PNG on cert + wallet copy</text>
+            <line x1="115" y1="278" x2="115" y2="294" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="298" width="198" height="52" rx="10" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+            <text x="115" y="318" text-anchor="middle" fill="#e8f1fb" font-weight="600">Append to hash chain</text>
+            <text x="115" y="334" text-anchor="middle" fill="#9db4cc" font-size="8.5">block data: certId|module|score</text>
+            <text x="115" y="348" text-anchor="middle" fill="#9db4cc" font-size="8.5">prevHash â†’ hash (SHA-256)</text>
+            <line x1="115" y1="350" x2="115" y2="366" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="370" width="198" height="48" rx="10" fill="rgba(244,114,182,.1)" stroke="#f472b6"/>
+            <text x="115" y="390" text-anchor="middle" fill="#e8f1fb" font-weight="600">Optional: Polygon anchor</text>
+            <text x="115" y="406" text-anchor="middle" fill="#9db4cc" font-size="8.5">tx hash stored (real RPC in final)</text>
+            <line x1="115" y1="418" x2="115" y2="434" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="438" width="198" height="56" rx="10" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="115" y="458" text-anchor="middle" fill="#e8f1fb" font-weight="600">Anyone scans QR</text>
+            <text x="115" y="474" text-anchor="middle" fill="#9db4cc" font-size="8.5">GET /certificate/verify/{payload}</text>
+            <text x="115" y="488" text-anchor="middle" fill="#9db4cc" font-size="8.5">anonymous Â· valid/name/score</text>
+            <line x1="115" y1="494" x2="115" y2="510" stroke="#c4b5fd" stroke-width="1.5" marker-end="url(#k3)"/>
+
+            <rect x="16" y="514" width="198" height="24" rx="8" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+            <text x="115" y="530" text-anchor="middle" fill="#c4b5fd" font-size="9.5" font-weight="700">VERIFIED Â· tamper-evident</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Platform Workflows</span><span>07</span></div>
+</section>
+<!-- ================= 08 API + DATA ARCHITECTURE ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">07 Â· Data &amp; API Architecture</div><h2>Collections, Contracts &amp; Endpoint Map</h2></div>
+      <div class="num">MongoDB Â· REST</div>
+    </div>
+
+    <div class="cols2" style="gap:12px;">
+      <div class="card pad">
+        <div class="mini-t">MongoDB â€” 10 Collections</div>
+        <svg viewBox="0 0 350 300" width="100%" height="280">
+          <defs>
+            <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6b8299"/></marker>
+          </defs>
+          <!-- relation lines -->
+          <g stroke="#6b8299" stroke-width="1.2" fill="none" marker-end="url(#d1)">
+            <line x1="88" y1="58" x2="88" y2="88"/>
+            <line x1="160" y1="58" x2="230" y2="88"/>
+            <line x1="88" y1="130" x2="88" y2="168"/>
+            <line x1="270" y1="130" x2="270" y2="168"/>
+            <line x1="160" y1="210" x2="160" y2="238"/>
+          </g>
+          <g font-size="9.5">
+            <rect x="20" y="18" width="130" height="40" rx="9" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/>
+            <text x="85" y="36" text-anchor="middle" fill="#e8f1fb" font-weight="700">users</text>
+            <text x="85" y="50" text-anchor="middle" fill="#9db4cc" font-size="8">role Â· company Â· OTP</text>
+
+            <rect x="190" y="18" width="130" height="40" rx="9" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="255" y="36" text-anchor="middle" fill="#e8f1fb" font-weight="700">companies</text>
+            <text x="255" y="50" text-anchor="middle" fill="#9db4cc" font-size="8">admin-owned tenant</text>
+
+            <rect x="20" y="90" width="130" height="40" rx="9" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+            <text x="85" y="108" text-anchor="middle" fill="#e8f1fb" font-weight="700">site_mappings</text>
+            <text x="85" y="122" text-anchor="middle" fill="#9db4cc" font-size="8">anchor pose Â· points</text>
+
+            <rect x="190" y="90" width="130" height="40" rx="9" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/>
+            <text x="255" y="108" text-anchor="middle" fill="#e8f1fb" font-weight="700">scenarios</text>
+            <text x="255" y="122" text-anchor="middle" fill="#9db4cc" font-size="8">assigned per worker</text>
+
+            <rect x="20" y="170" width="130" height="40" rx="9" fill="rgba(244,114,182,.12)" stroke="#f472b6"/>
+            <text x="85" y="188" text-anchor="middle" fill="#e8f1fb" font-weight="700">training_modules</text>
+            <text x="85" y="202" text-anchor="middle" fill="#9db4cc" font-size="8">seeded Â· data-driven</text>
+
+            <rect x="190" y="170" width="130" height="40" rx="9" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/>
+            <text x="255" y="188" text-anchor="middle" fill="#e8f1fb" font-weight="700">training_attempts</text>
+            <text x="255" y="202" text-anchor="middle" fill="#9db4cc" font-size="8">60/40 scores Â· pass</text>
+
+            <rect x="20" y="240" width="100" height="40" rx="9" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+            <text x="70" y="258" text-anchor="middle" fill="#e8f1fb" font-weight="700">assessments</text>
+            <text x="70" y="272" text-anchor="middle" fill="#9db4cc" font-size="8">quiz results</text>
+
+            <rect x="135" y="240" width="100" height="40" rx="9" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+            <text x="185" y="258" text-anchor="middle" fill="#e8f1fb" font-weight="700">certificates</text>
+            <text x="185" y="272" text-anchor="middle" fill="#9db4cc" font-size="8">sig Â· QR Â· chain</text>
+
+            <rect x="250" y="240" width="80" height="40" rx="9" fill="rgba(248,113,113,.12)" stroke="#f87171"/>
+            <text x="290" y="258" text-anchor="middle" fill="#e8f1fb" font-weight="700">escalations</text>
+            <text x="290" y="272" text-anchor="middle" fill="#9db4cc" font-size="8">reports</text>
+
+            <rect x="250" y="90" width="0" height="0" fill="none"/>
+            <!-- blockchain -->
+            <rect x="190" y="130" width="0" height="0" fill="none"/>
+          </g>
+          <rect x="145" y="130" width="140" height="28" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(120,200,255,.4)"/>
+          <text x="215" y="148" text-anchor="middle" fill="#9db4cc" font-size="9">blockchain (SHA-256 chain)</text>
+        </svg>
+        <p class="sub" style="font-size:10.5px; margin-top:2px;">Indexes on UserId, CertificateId, AttemptId, AssessmentId, ModuleId. camelCase convention. Raw BsonDocument at runtime for module/assessment flows.</p>
+      </div>
+
+      <div class="card pad">
+        <div class="mini-t">REST API Surface (by role)</div>
+        <table>
+          <thead><tr><th>Group</th><th>Role</th><th>Key routes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Auth</strong></td><td><span class="status s-ok">public/self</span></td><td>login Â· otp/send Â· otp/verify Â· admin/seed Â· user/{id} Â· theme Â· language</td></tr>
+            <tr><td><strong>Admin</strong></td><td><span class="status s-fix">AdminOnly</span></td><td>manager/add Â· worker/confirm Â· workers Â· sites Â· escalations Â· admins</td></tr>
+            <tr><td><strong>Manager</strong></td><td><span class="status s-fix">Mgr|Admin</span></td><td>worker/add Â· my workers Â· scenario/assign Â· stats Â· citification</td></tr>
+            <tr><td><strong>Worker</strong></td><td><span class="status s-new">auth</span></td><td>scenarios Â· escalation/report Â· site/record</td></tr>
+            <tr><td><strong>Training</strong></td><td><span class="status s-new">auth</span></td><td>modules Â· start Â· complete Â· history</td></tr>
+            <tr><td><strong>Assessment</strong></td><td><span class="status s-new">auth</span></td><td>questions Â· submit  <em style="color:#fcd34d;">(final: answers stay server-side)</em></td></tr>
+            <tr><td><strong>Certificate</strong></td><td><span class="status s-new">auth/anon</span></td><td>generate Â· {id} Â· verify/{qr} Â· blockchain-anchor</td></tr>
+            <tr><td><strong>Offline</strong></td><td><span class="status s-new">auth</span></td><td>worker/offline/{id} Â· worker/online/sync</td></tr>
+            <tr><td><strong>Ops</strong></td><td><span class="status s-ok">public</span></td><td>GET /health Â· Swagger (dev) Â· static /admin SPA</td></tr>
+          </tbody>
+        </table>
+        <div class="glowline" style="margin-top:10px;"></div>
+        <div class="mini-t" style="margin-top:8px;">Cross-Cutting Contracts</div>
+        <ul class="ticks">
+          <li>Every authed call: <b>Authorization: Bearer &lt;jwt&gt;</b></li>
+          <li>Errors: 400 message Â· 401 unauth Â· 403 policy Â· 404 missing</li>
+          <li>IDs are strings (GUIDs); dates ISO-8601 UTC</li>
+          <li>Company scoping via <b>companyId</b> claim on list routes</li>
+          <li>Workers can only read self (object-level checks)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cols3" style="gap:11px; margin-top:12px;">
+      <div class="card pad">
+        <div class="mini-t">Scoring Contract</div>
+        <p class="sub" style="font-size:11.5px;">Total = <b style="color:#67e8f9;">0.6 Ã— action</b> + <b style="color:#c4b5fd;">0.4 Ã— quiz</b>. Pass â‰¥ 70 (gas module 75). Escalation penalties applied to action score. Clamp 0â€“100, escalation level 0â€“4.</p>
+      </div>
+      <div class="card pad">
+        <div class="mini-t">Offline Bundle Shape</div>
+        <p class="sub" style="font-size:11.5px;"><b>OfflineData</b> = scenarios[] + siteMappings[] + lastSyncTime. Sync request = completedScenarios[] + escalations[], keyed by attemptId for idempotency.</p>
+      </div>
+      <div class="card pad">
+        <div class="mini-t">Certificate Payload</div>
+        <p class="sub" style="font-size:11.5px;">certId Â· employeeId/name Â· moduleId/name Â· score Â· passed Â· issuedAt Â· signature Â· blockchainTx Â· qrPayload = <b>SURAKSHA:{id}:{hash}</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Data &amp; API Architecture</span><span>08</span></div>
+</section>
+
+<!-- ================= 09 ROLES + SCREENS ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">08 Â· Product Surface</div><h2>Roles, Screens &amp; Feature Scope</h2></div>
+      <div class="num">Who sees what</div>
+    </div>
+
+    <div class="cols3" style="gap:11px;">
+      <div class="card pad" style="border-color:rgba(56,189,248,.4);">
+        <div class="mini-t" style="color:#7dd3fc;">Worker</div>
+        <h3 style="margin:4px 0 6px;">Train Â· Prove Â· Repeat</h3>
+        <ul class="ticks" style="font-size:11.5px;">
+          <li>Home: todayâ€™s training, X/5 progress</li>
+          <li>QR scan â†’ AR session</li>
+          <li>HUD, timer, evacuation arrows</li>
+          <li>Assessment + score breakdown</li>
+          <li>Certificate wallet + QR</li>
+          <li>Offline badge &amp; sync status</li>
+          <li>Language + voice settings</li>
+        </ul>
+      </div>
+      <div class="card pad" style="border-color:rgba(52,211,153,.4);">
+        <div class="mini-t" style="color:#6ee7b7;">Manager</div>
+        <h3 style="margin:4px 0 6px;">Roster Â· Assign Â· Verify</h3>
+        <ul class="ticks" style="font-size:11.5px;">
+          <li>Worker list + compliance %</li>
+          <li>Add/remove own workers</li>
+          <li>Assign scenarios to workers</li>
+          <li>Certificate QR verification</li>
+          <li>Escalation inbox (scoped)</li>
+          <li>Site citification view</li>
+          <li>Stats: total/active/pending</li>
+        </ul>
+      </div>
+      <div class="card pad" style="border-color:rgba(167,139,250,.4);">
+        <div class="mini-t" style="color:#c4b5fd;">Admin (Web)</div>
+        <h3 style="margin:4px 0 6px;">Control Â· Audit Â· Scale</h3>
+        <ul class="ticks" style="font-size:11.5px;">
+          <li>System overview + stat cards</li>
+          <li>Create managers &amp; admins</li>
+          <li>Confirm pending workers</li>
+          <li>Site mappings management</li>
+          <li>Escalation assign/resolve</li>
+          <li>Module config (final scope)</li>
+          <li>Company tenant isolation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mini-t" style="margin-top:13px;">Screen Map â€” Final App</div>
+    <div class="card pad" style="flex:1; min-height:0;">
+      <svg viewBox="0 0 720 420" width="100%" height="100%">
+        <defs>
+          <marker id="sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#67e8f9"/></marker>
+        </defs>
+        <!-- phone frames -->
+        <g font-size="9.5">
+          <!-- column 1 worker -->
+          <text x="60" y="24" fill="#7dd3fc" font-weight="700" font-size="11" text-anchor="middle" letter-spacing="2">WORKER FLOW</text>
+          <rect x="20" y="36" width="84" height="70" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/><text x="62" y="66" text-anchor="middle" fill="#e8f1fb" font-weight="600">Splash</text><text x="62" y="82" text-anchor="middle" fill="#9db4cc" font-size="8">brand + load</text>
+          <rect x="20" y="124" width="84" height="70" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/><text x="62" y="154" text-anchor="middle" fill="#e8f1fb" font-weight="600">Login</text><text x="62" y="170" text-anchor="middle" fill="#9db4cc" font-size="8">ID + password</text>
+          <rect x="20" y="212" width="84" height="70" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/><text x="62" y="242" text-anchor="middle" fill="#e8f1fb" font-weight="600">Worker Home</text><text x="62" y="258" text-anchor="middle" fill="#9db4cc" font-size="8">progress cards</text>
+          <rect x="20" y="300" width="84" height="70" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/><text x="62" y="330" text-anchor="middle" fill="#e8f1fb" font-weight="600">QR Scanner</text><text x="62" y="346" text-anchor="middle" fill="#9db4cc" font-size="8">checkpoint</text>
+          <line x1="62" y1="106" x2="62" y2="122" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="62" y1="194" x2="62" y2="210" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="62" y1="282" x2="62" y2="298" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+
+          <!-- column 2 ar core -->
+          <text x="230" y="24" fill="#c4b5fd" font-weight="700" font-size="11" text-anchor="middle" letter-spacing="2">AR CORE</text>
+          <rect x="150" y="124" width="160" height="80" rx="12" fill="rgba(167,139,250,.14)" stroke="#a78bfa" stroke-width="1.6"/>
+          <text x="230" y="156" text-anchor="middle" fill="#e8f1fb" font-weight="700" font-size="11.5">AR Training Scene</text>
+          <text x="230" y="174" text-anchor="middle" fill="#9db4cc" font-size="9">camera Â· planes Â· 3D hazard</text>
+          <text x="230" y="190" text-anchor="middle" fill="#9db4cc" font-size="9">HUD Â· timer Â· action buttons</text>
+
+          <rect x="150" y="230" width="160" height="70" rx="12" fill="rgba(251,191,36,.12)" stroke="#fbbf24"/>
+          <text x="230" y="258" text-anchor="middle" fill="#e8f1fb" font-weight="600">Escalation HUD</text>
+          <text x="230" y="276" text-anchor="middle" fill="#9db4cc" font-size="9">level Â· penalties Â· arrows</text>
+
+          <rect x="150" y="326" width="160" height="70" rx="12" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+          <text x="230" y="354" text-anchor="middle" fill="#e8f1fb" font-weight="600">Assessment</text>
+          <text x="230" y="372" text-anchor="middle" fill="#9db4cc" font-size="9">5 randomized MCQs</text>
+
+          <line x1="104" y1="335" x2="148" y2="164" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="230" y1="204" x2="230" y2="228" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="230" y1="300" x2="230" y2="324" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+        </g>
+
+        <!-- column 3 results -->
+        <g font-size="9.5">
+          <text x="430" y="24" fill="#6ee7b7" font-weight="700" font-size="11" text-anchor="middle" letter-spacing="2">RESULT &amp; PROOF</text>
+          <rect x="350" y="124" width="160" height="70" rx="12" fill="rgba(52,211,153,.12)" stroke="#34d399"/>
+          <text x="430" y="152" text-anchor="middle" fill="#e8f1fb" font-weight="600">Score Result</text>
+          <text x="430" y="170" text-anchor="middle" fill="#9db4cc" font-size="9">pass/fail Â· 60/40 Â· time</text>
+
+          <rect x="350" y="220" width="160" height="80" rx="12" fill="rgba(56,189,248,.12)" stroke="#38bdf8"/>
+          <text x="430" y="252" text-anchor="middle" fill="#e8f1fb" font-weight="600">Certificate</text>
+          <text x="430" y="270" text-anchor="middle" fill="#9db4cc" font-size="9">QR Â· signature Â· chain</text>
+          <text x="430" y="286" text-anchor="middle" fill="#9db4cc" font-size="9">wallet list</text>
+
+          <rect x="350" y="326" width="160" height="70" rx="12" fill="rgba(244,114,182,.12)" stroke="#f472b6"/>
+          <text x="430" y="354" text-anchor="middle" fill="#e8f1fb" font-weight="600">Settings / Profile</text>
+          <text x="430" y="372" text-anchor="middle" fill="#9db4cc" font-size="9">language Â· voice Â· theme</text>
+
+          <line x1="310" y1="361" x2="348" y2="159" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="430" y1="194" x2="430" y2="218" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+        </g>
+
+        <!-- admin column -->
+        <g font-size="9.5">
+          <text x="620" y="24" fill="#fcd34d" font-weight="700" font-size="11" text-anchor="middle" letter-spacing="2">MANAGER / ADMIN</text>
+          <rect x="540" y="60" width="160" height="64" rx="12" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+          <text x="620" y="86" text-anchor="middle" fill="#e8f1fb" font-weight="600">Manager Home</text>
+          <text x="620" y="104" text-anchor="middle" fill="#9db4cc" font-size="9">roster Â· compliance</text>
+
+          <rect x="540" y="150" width="160" height="64" rx="12" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+          <text x="620" y="176" text-anchor="middle" fill="#e8f1fb" font-weight="600">Cert Verify</text>
+          <text x="620" y="194" text-anchor="middle" fill="#9db4cc" font-size="9">scan Â· lookup</text>
+
+          <rect x="540" y="240" width="160" height="64" rx="12" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+          <text x="620" y="266" text-anchor="middle" fill="#e8f1fb" font-weight="600">Admin Web SPA</text>
+          <text x="620" y="284" text-anchor="middle" fill="#9db4cc" font-size="9">:5000 Â· 5 tabs</text>
+
+          <rect x="540" y="330" width="160" height="64" rx="12" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+          <text x="620" y="356" text-anchor="middle" fill="#e8f1fb" font-weight="600">AdminCLI</text>
+          <text x="620" y="374" text-anchor="middle" fill="#9db4cc" font-size="9">bootstrap Â· ops</text>
+          <line x1="620" y1="124" x2="620" y2="148" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="620" y1="214" x2="620" y2="238" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+          <line x1="620" y1="304" x2="620" y2="328" stroke="#67e8f9" stroke-width="1.5" marker-end="url(#sm)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="cols4" style="margin-top:11px;">
+      <div class="card pad"><div class="mini-t">Must (demo)</div><p class="sub" style="font-size:10.5px;">2 AR modules Â· assessment Â· QR cert Â· Hindi+Santali Â· offline train Â· admin web</p></div>
+      <div class="card pad"><div class="mini-t">Should</div><p class="sub" style="font-size:10.5px;">Real outbox sync Â· Ed25519 Â· 3D assets Â· particles Â· voice 7 langs Â· TalkBack</p></div>
+      <div class="card pad"><div class="mini-t">Could</div><p class="sub" style="font-size:10.5px;">Polygon anchor live Â· module config UI Â· manager analytics charts Â· Site view</p></div>
+      <div class="card pad"><div class="mini-t">Won't (v1)</div><p class="sub" style="font-size:10.5px;">iOS Â· VR headset Â· live multi-user drills Â· payments Â· marketplace</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Product Surface</span><span>09</span></div>
+</section>
+<!-- ================= 10 STATE: current vs final + security ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">09 Â· Gap Analysis</div><h2>Current State â†’ Final State</h2></div>
+      <div class="num">Honest baseline</div>
+    </div>
+
+    <div class="cols2" style="gap:12px;">
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div style="padding:10px 14px; background:rgba(52,211,153,.1); border-bottom:1px solid rgba(52,211,153,.3);">
+          <span class="mini-t" style="color:#6ee7b7; margin:0;">What EXISTS &amp; WORKS today</span>
+        </div>
+        <div style="padding:10px 14px;">
+          <table>
+            <tbody>
+              <tr><td><strong>Backend API</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>JWT + RBAC</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Mongo persistence</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Admin web SPA</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Cert QR + verify</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Training modules seed</strong></td><td><span class="status s-ok">2 modules</span></td></tr>
+              <tr><td><strong>Android screens (10)</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Site-map AR (anchors)</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Escalation reporting</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>EN/HI/SAT strings</strong></td><td><span class="status s-ok">48 keys</span></td></tr>
+              <tr><td><strong>Local hash chain</strong></td><td><span class="status s-ok">works</span></td></tr>
+              <tr><td><strong>Unity training scripts</strong></td><td><span class="status s-ok">reference</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div style="padding:10px 14px; background:rgba(56,189,248,.1); border-bottom:1px solid rgba(56,189,248,.3);">
+            <span class="mini-t" style="color:#7dd3fc; margin:0;">What the FINAL build must ADD / FIX</span>
+          </div>
+          <div style="padding:10px 14px;">
+            <table>
+              <tbody>
+                <tr><td><strong>Real AR training scene</strong></td><td><span class="status s-new">critical</span></td></tr>
+                <tr><td><strong>Escalation engine live</strong></td><td><span class="status s-new">critical</span></td></tr>
+                <tr><td><strong>Offline outbox sync</strong></td><td><span class="status s-new">critical</span></td></tr>
+                <tr><td><strong>Single client decision</strong></td><td><span class="status s-new">critical</span></td></tr>
+                <tr><td><strong>Ed25519 real signing</strong></td><td><span class="status s-fix">security</span></td></tr>
+                <tr><td><strong>Secrets out of repo</strong></td><td><span class="status s-fix">security</span></td></tr>
+                <tr><td><strong>Quiz answers server-side</strong></td><td><span class="status s-fix">cheat-proof</span></td></tr>
+                <tr><td><strong>CORS lock-down</strong></td><td><span class="status s-fix">security</span></td></tr>
+                <tr><td><strong>Manager escalations bug</strong></td><td><span class="status s-fix">fix</span></td></tr>
+                <tr><td><strong>Compile break (citification)</strong></td><td><span class="status s-fix">fix</span></td></tr>
+                <tr><td><strong>Room DB + outbox</strong></td><td><span class="status s-new">new</span></td></tr>
+                <tr><td><strong>3D hazard assets</strong></td><td><span class="status s-new">content</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card pad">
+          <div class="mini-t">Known issues carried into plan</div>
+          <ul class="ticks" style="font-size:11.5px;">
+            <li>JWT secret hardcoded in 3 files + appsettings</li>
+            <li>Assessment questions include correctAnswerIndex</li>
+            <li>OTP never sent (Twilio unconfigured) Â· in-memory store</li>
+            <li>POST /auth/admin/reset wipes entire users collection</li>
+            <li>Dual frontend (Kotlin + Unity) model drift risk</li>
+            <li>AdminCLI seed missing companyName â†’ 400</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mini-t" style="margin-top:13px;">Security Architecture â€” Final Hardening</div>
+    <div class="card pad" style="flex:1; min-height:0;">
+      <svg viewBox="0 0 720 240" width="100%" height="100%">
+        <defs>
+          <marker id="sc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#f87171"/></marker>
+        </defs>
+        <!-- threat side -->
+        <text x="30" y="30" fill="#fca5a5" font-size="10.5" font-weight="700" letter-spacing="2">UNTRUSTED</text>
+        <rect x="30" y="44" width="150" height="46" rx="10" fill="rgba(248,113,113,.1)" stroke="#f87171"/>
+        <text x="105" y="64" text-anchor="middle" fill="#e8f1fb" font-weight="600" font-size="11">Public internet</text>
+        <text x="105" y="80" text-anchor="middle" fill="#9db4cc" font-size="9">device Â· LAN Â· web</text>
+        <rect x="30" y="106" width="150" height="46" rx="10" fill="rgba(248,113,113,.1)" stroke="#f87171"/>
+        <text x="105" y="126" text-anchor="middle" fill="#e8f1fb" font-weight="600" font-size="11">Tampered APK</text>
+        <text x="105" y="142" text-anchor="middle" fill="#9db4cc" font-size="9">repackaged client</text>
+        <rect x="30" y="168" width="150" height="46" rx="10" fill="rgba(248,113,113,.1)" stroke="#f87171"/>
+        <text x="105" y="188" text-anchor="middle" fill="#e8f1fb" font-weight="600" font-size="11">Curious worker</text>
+        <text x="105" y="204" text-anchor="middle" fill="#9db4cc" font-size="9">shared devices</text>
+
+        <!-- shield -->
+        <line x1="184" y1="67" x2="250" y2="90" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#sc)"/>
+        <path d="M270 40 L330 56 V110 C330 150 305 172 270 184 C235 172 210 150 210 110 V56 Z" fill="rgba(34,211,238,.08)" stroke="#22d3ee" stroke-width="2"/>
+        <text x="270" y="100" text-anchor="middle" fill="#67e8f9" font-size="12" font-weight="700">API EDGE</text>
+        <text x="270" y="118" text-anchor="middle" fill="#9db4cc" font-size="9">TLS Â· CORS allow-list</text>
+        <text x="270" y="132" text-anchor="middle" fill="#9db4cc" font-size="9">JWT verify Â· rate limit*</text>
+        <text x="270" y="146" text-anchor="middle" fill="#9db4cc" font-size="9">policy middleware</text>
+
+        <!-- controls -->
+        <g font-size="10">
+          <rect x="360" y="34" width="330" height="48" rx="10" fill="rgba(52,211,153,.1)" stroke="#34d399"/>
+          <text x="378" y="54" fill="#6ee7b7" font-weight="700">Identity</text>
+          <text x="378" y="70" fill="#9db4cc" font-size="9.5">BCrypt hashes Â· short-lived JWT Â· OTP second factor (Twilio)</text>
+
+          <rect x="360" y="94" width="330" height="48" rx="10" fill="rgba(56,189,248,.1)" stroke="#38bdf8"/>
+          <text x="378" y="114" fill="#7dd3fc" font-weight="700">Authorization</text>
+          <text x="378" y="130" fill="#9db4cc" font-size="9.5">Role policies Â· company claim scoping Â· self-or-admin object checks</text>
+
+          <rect x="360" y="154" width="330" height="48" rx="10" fill="rgba(167,139,250,.1)" stroke="#a78bfa"/>
+          <text x="378" y="174" fill="#c4b5fd" font-weight="700">Data integrity</text>
+          <text x="378" y="190" fill="#9db4cc" font-size="9.5">Ed25519 cert sigs Â· hash chain Â· server-side scoring Â· audit log*</text>
+
+          <rect x="360" y="214" width="330" height="20" rx="6" fill="rgba(251,191,36,.1)" stroke="#fbbf24"/>
+          <text x="525" y="228" text-anchor="middle" fill="#fcd34d" font-size="9">* env-var secrets Â· CORS origins Â· request rate limiting added in final</text>
+        </g>
+        <text x="30" y="232" fill="#6b8299" font-size="9">Never trust the client: all scoring, issuance, and RBAC enforced server-side.</text>
+      </svg>
+    </div>
+  </div>
+  <div class="foot"><span>Gap Analysis &amp; Security</span><span>10</span></div>
+</section>
+<!-- ================= 11 ROADMAP ================= -->
+<section class="page grid-bg">
+  <div class="wrap">
+    <div class="phead">
+      <div><div class="kicker">10 Â· Delivery Plan</div><h2>Implementation Roadmap â€” Final Build</h2></div>
+      <div class="num">5 phases Â· ~6 weeks</div>
+    </div>
+
+    <div class="mini-t">Phase Timeline</div>
+    <div class="card" style="padding:14px 12px; height:190px;">
+      <svg viewBox="0 0 720 160" width="100%" height="100%">
+        <defs>
+          <linearGradient id="tl" x1="0" y1="0" x2="1" y2="0">
+            <stop stop-color="#22d3ee"/><stop offset=".35" stop-color="#34d399"/>
+            <stop offset=".7" stop-color="#a78bfa"/><stop offset="1" stop-color="#fbbf24"/>
+          </linearGradient>
+          <marker id="tm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#67e8f9"/></marker>
+        </defs>
+        <line x1="30" y1="70" x2="690" y2="70" stroke="url(#tl)" stroke-width="4" stroke-linecap="round"/>
+        <g font-size="9.5">
+          <circle cx="60" cy="70" r="10" fill="#0b1a2b" stroke="#22d3ee" stroke-width="2.5"/>
+          <text x="60" y="46" text-anchor="middle" fill="#67e8f9" font-weight="700">P1 Â· Stabilize</text>
+          <text x="60" y="96" text-anchor="middle" fill="#9db4cc">Wk 1</text>
+          <text x="60" y="112" text-anchor="middle" fill="#6b8299" font-size="8.5">fix breaks Â· security</text>
+          <text x="60" y="126" text-anchor="middle" fill="#6b8299" font-size="8.5">secrets Â· CORS Â· bugs</text>
+
+          <circle cx="200" cy="70" r="10" fill="#0b1a2b" stroke="#34d399" stroke-width="2.5"/>
+          <text x="200" y="46" text-anchor="middle" fill="#6ee7b7" font-weight="700">P2 Â· AR Core</text>
+          <text x="200" y="96" text-anchor="middle" fill="#9db4cc">Wk 2â€“3</text>
+          <text x="200" y="112" text-anchor="middle" fill="#6b8299" font-size="8.5">fire + gas scenes</text>
+          <text x="200" y="126" text-anchor="middle" fill="#6b8299" font-size="8.5">HUD Â· escalation live</text>
+
+          <circle cx="360" cy="70" r="10" fill="#0b1a2b" stroke="#38bdf8" stroke-width="2.5"/>
+          <text x="360" y="46" text-anchor="middle" fill="#7dd3fc" font-weight="700">P3 Â· Offline Sync</text>
+          <text x="360" y="96" text-anchor="middle" fill="#9db4cc">Wk 3â€“4</text>
+          <text x="360" y="112" text-anchor="middle" fill="#6b8299" font-size="8.5">Room + outbox</text>
+          <text x="360" y="126" text-anchor="middle" fill="#6b8299" font-size="8.5">idempotent upload</text>
+
+          <circle cx="510" cy="70" r="10" fill="#0b1a2b" stroke="#a78bfa" stroke-width="2.5"/>
+          <text x="510" y="46" text-anchor="middle" fill="#c4b5fd" font-weight="700">P4 Â· Trust Layer</text>
+          <text x="510" y="96" text-anchor="middle" fill="#9db4cc">Wk 4â€“5</text>
+          <text x="510" y="112" text-anchor="middle" fill="#6b8299" font-size="8.5">Ed25519 Â· server quiz</text>
+          <text x="510" y="126" text-anchor="middle" fill="#6b8299" font-size="8.5">Polygon Â· verify UX</text>
+
+          <circle cx="650" cy="70" r="10" fill="#0b1a2b" stroke="#fbbf24" stroke-width="2.5"/>
+          <text x="650" y="46" text-anchor="middle" fill="#fcd34d" font-weight="700">P5 Â· Polish</text>
+          <text x="650" y="96" text-anchor="middle" fill="#9db4cc">Wk 5â€“6</text>
+          <text x="650" y="112" text-anchor="middle" fill="#6b8299" font-size="8.5">3D art Â· i18n 7</text>
+          <text x="650" y="126" text-anchor="middle" fill="#6b8299" font-size="8.5">APK Â· video Â· demo</text>
+        </g>
+        <text x="360" y="154" text-anchor="middle" fill="#6b8299" font-size="9.5">Each phase ends with a runnable demo build â€” no big-bang integration.</text>
+      </svg>
+    </div>
+
+    <div class="cols2" style="gap:12px; margin-top:12px; flex:1;">
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div style="padding:9px 13px; background:rgba(34,211,238,.1);"><span class="mini-t" style="margin:0;">Phase deliverables</span></div>
+        <div style="padding:8px 12px;">
+          <table>
+            <thead><tr><th>Phase</th><th>Outcome</th></tr></thead>
+            <tbody>
+              <tr><td><strong>P1</strong></td><td>Green build Â· citification fix Â· env secrets Â· CORS list Â· manager escalation scope Â· AdminCLI seed fix</td></tr>
+              <tr><td><strong>P2</strong></td><td>Native AR fire + gas sessions with HUD, timer, escalation states, action taps, evacuation arrows</td></tr>
+              <tr><td><strong>P3</strong></td><td>Room cache of modules/sites Â· outbox queue Â· reconnect flush Â· airplane-mode demo path</td></tr>
+              <tr><td><strong>P4</strong></td><td>Ed25519 keypair Â· sign on issue Â· verify offline + online Â· quiz scoring only on server</td></tr>
+              <tr><td><strong>P5</strong></td><td>3D props + particles Â· 7-language pass Â· accessibility Â· signed APK Â· demo video Â· GitHub README</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card pad">
+          <div class="mini-t">Definition of Done (product)</div>
+          <ul class="ticks" style="font-size:11.5px;">
+            <li>Worker completes fire module fully offline, syncs later</li>
+            <li>Escalation visibly worsens scene within 15s ticks</li>
+            <li>Certificate QR verifies on a second phone, no login</li>
+            <li>Manager sees only own company workers &amp; escalations</li>
+            <li>Admin dashboard confirms worker + assigns escalation</li>
+            <li>Hindi &amp; Santali UI + voice on critical prompts</li>
+          </ul>
+        </div>
+        <div class="card pad">
+          <div class="mini-t">Success metrics</div>
+          <div class="cols2" style="gap:8px;">
+            <div class="hstat" style="padding:8px;"><b>&lt;60s</b><span>Median action time</span></div>
+            <div class="hstat" style="padding:8px;"><b>â‰¥70%</b><span>First-pass rate</span></div>
+            <div class="hstat" style="padding:8px;"><b>0</b><span>Data loss offline</span></div>
+            <div class="hstat" style="padding:8px;"><b>2+</b><span>Live AR modules</span></div>
+          </div>
+        </div>
+        <div class="card pad">
+          <div class="mini-t">Top risks &amp; mitigations</div>
+          <p class="sub" style="font-size:11px;"><b style="color:#fcd34d;">Low-end AR perf â†’</b> budget mode, primitive+texture fallback, SceneView LOD.<br>
+          <b style="color:#fcd34d;">Dual-client confusion â†’</b> freeze Unity as design reference; native is ship path.<br>
+          <b style="color:#fcd34d;">Offline conflicts â†’</b> attemptId idempotency; last-writer only on non-critical fields.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Delivery Roadmap</span><span>11</span></div>
+</section>
+
+<!-- ================= 12 CLOSING ================= -->
+<section class="page grid-bg">
+  <div class="wrap" style="justify-content:center;">
+    <div class="kicker">Closing Â· The Ask</div>
+    <h1 style="margin-top:16px; font-size:34px;">Ship one honest,<br><span class="accent">offline-first AR trainer</span><br>that mines will actually use.</h1>
+    <div class="glowline" style="margin:22px 0; max-width:120mm;"></div>
+    <div class="cols3" style="gap:12px; max-width:180mm;">
+      <div class="card pad">
+        <div class="mini-t">Build</div>
+        <p class="sub" style="font-size:12px;">One Kotlin client with a real AR training scene, a hardened .NET API, and a Room-backed sync outbox â€” the architecture already sketched in this document.</p>
+      </div>
+      <div class="card pad">
+        <div class="mini-t">Prove</div>
+        <p class="sub" style="font-size:12px;">Scored sessions, escalation pressure, and certificates anyone can verify by QR â€” with the trust story (Ed25519 + chain) made real, not simulated.</p>
+      </div>
+      <div class="card pad">
+        <div class="mini-t">Deliver</div>
+        <p class="sub" style="font-size:12px;">SIH package: working APK, demo video, GitHub repo, admin dashboard â€” meeting every minimum requirement of problem statement 26041.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:28px; display:flex; gap:12px; flex-wrap:wrap;">
+      <span class="chip c">Real Hazards</span>
+      <span class="chip g">Real Decisions</span>
+      <span class="chip a">Safer Tomorrow</span>
+    </div>
+
+    <div class="card pad" style="margin-top:26px; max-width:180mm;">
+      <div class="mini-t">Document control</div>
+      <p class="sub" style="font-size:11.5px;">
+        SurakshaAR â€” Final Version Proposal Â· v1.0 Â· September 2026<br>
+        Prepared from full review of <b>E:\SAFE</b> (Backend, Shared, SurakshaAR-Android, UnityAR, AdminCLI, REF, PROJECT_VISION, WORKFLOW)<br>
+        Problem Statement SIH 26041 Â· Government of Jharkhand Â· Smart Education
+      </p>
+    </div>
+
+    <svg width="100%" height="60" viewBox="0 0 700 60" style="margin-top:24px; opacity:.7;" preserveAspectRatio="none">
+      <defs><linearGradient id="endg" x1="0" y1="0" x2="1" y2="0"><stop stop-color="transparent"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+      <line x1="0" y1="30" x2="700" y2="30" stroke="url(#endg)" stroke-width="2"/>
+      <circle cx="350" cy="30" r="6" fill="none" stroke="#34d399" stroke-width="2"/>
+      <circle cx="350" cy="30" r="2.5" fill="#34d399"/>
+    </svg>
+  </div>
+  <div class="foot"><span>SurakshaAR Â· Thank you</span><span>12</span></div>
+</section>
+
+</body>
+</html>
+

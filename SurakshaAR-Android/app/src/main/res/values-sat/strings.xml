@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">सुरक्षाAR</string>
+    <string name="login_title">सुरक्षाAR</string>
+    <string name="login_subtitle">केताँ मिनिंग आराक् तालिम मञ्च</string>
+    <string name="login_user_id">मजदुर / प्रशासनिक आईडी रेयाक् ओडोक् या</string>
+    <string name="login_password">पासवर्ड रेयाक् ओडोक् या</string>
+    <string name="login_button">साइन इन</string>
+    <string name="login_remember">आईडी उनुम रेयाक्</string>
+    <string name="login_otp_divider">- आवा -</string>
+    <string name="login_otp_button">OTP खोन लॉगिन ते</string>
+    <string name="otp_title">OTP ञेल तुरते</string>
+    <string name="otp_subtitle">आमाक् दाखिल मोबाइल नांबार रेयाक् ओडोक् या</string>
+    <string name="otp_phone_hint">+91 XXXXX XXXXX</string>
+    <string name="otp_send">OTP पठाव या</string>
+    <string name="otp_enter_hint">6 अंका को OTP रेयाक् ओडोक् या</string>
+    <string name="otp_verify">ञेल तुरते आर साइन इन ते</string>
+    <string name="otp_back">लॉगिन को फिर या</string>
+    <string name="lang_select">भासा बाछाव या</string>
+    <string name="camera_permission_required">AR ᱥᱟᱨᱪᱷᱟᱨᱚᱱ ᱞᱮ ᱠᱟᱢᱨᱟ ᱥᱟᱨᱪᱷᱟᱨᱚᱱ ᱮᱞᱟᱜᱤ</string>
+</resources>

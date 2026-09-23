@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurakshaAR Admin</title>
+    <link rel="stylesheet" href="/admin/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- LOGIN -->
+        <div id="login-screen" class="screen active">
+            <div class="login-card">
+                <h1>SurakshaAR</h1>
+                <p class="subtitle">Admin Dashboard</p>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Admin ID</label>
+                        <input type="text" id="login-userid" placeholder="e.g. admin01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
+                    <p id="login-error" class="error"></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard-screen" class="screen">
+            <nav class="topbar">
+                <div class="topbar-left">
+                    <h2>SurakshaAR</h2>
+                    <span class="badge">Admin</span>
+                </div>
+                <div class="topbar-right">
+                    <span id="admin-name"></span>
+                    <button type="button" class="btn btn-sm" id="btn-logout">Logout</button>
+                </div>
+            </nav>
+
+            <div class="layout">
+                <aside class="sidebar">
+                    <button class="nav-btn active" data-tab="overview">Overview</button>
+                    <button class="nav-btn" data-tab="workers">Workers</button>
+                    <button class="nav-btn" data-tab="managers">Managers</button>
+                    <button class="nav-btn" data-tab="escalations">Escalations</button>
+                    <button class="nav-btn" data-tab="sites">Sites</button>
+                    <button class="nav-btn" data-tab="compliance">Compliance</button>
+                    <button class="nav-btn" data-tab="certificates">Certificates</button>
+                    <button class="nav-btn" data-tab="attempts">Attempts</button>
+                </aside>
+
+                <main class="content">
+                    <!-- OVERVIEW -->
+                    <div id="tab-overview" class="tab active">
+                        <h3>Dashboard Overview</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="stat-workers">0</div>
+                                <div class="stat-label">Total Workers</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="stat-managers">0</div>
+                                <div class="stat-label">Managers</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-number" id="stat-pending">0</div>
+                                <div class="stat-label">Pending Confirmation</div>
+                            </div>
+                            <div class="stat-card danger">
+                                <div class="stat-number" id="stat-escalations">0</div>
+                                <div class="stat-label">Active Escalations</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WORKERS -->
+                    <div id="tab-workers" class="tab">
+                        <div class="tab-header">
+                            <h3>Worker Management</h3>
+                            <button type="button" class="btn btn-sm" id="btn-refresh-workers">Refresh</button>
+                        </div>
+                        <div id="pending-section">
+                            <h4>Pending Confirmation</h4>
+                            <table id="pending-table">
+                                <thead><tr><th>User ID</th><th>Name</th><th>Phone</th><th>Enrolled By</th><th>Action</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                            <p class="empty-msg" id="pending-empty">No pending workers</p>
+                        </div>
+                        <hr>
+                        <h4>All Workers</h4>
+                        <table id="workers-table">
+                            <thead><tr><th>User ID</th><th>Name</th><th>Phone</th><th>Status</th><th>Enrolled By</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="workers-empty">No workers found</p>
+                    </div>
+
+                    <!-- MANAGERS -->
+                    <div id="tab-managers" class="tab">
+                        <div class="tab-header">
+                            <h3>Manager Management</h3>
+                            <button type="button" class="btn btn-sm btn-primary" id="btn-show-add-manager">+ Add Manager</button>
+                        </div>
+                        <div id="add-manager-form" class="inline-form" style="display:none">
+                            <div class="form-row">
+                                <input type="text" id="mgr-userid" placeholder="Manager ID">
+                                <input type="text" id="mgr-name" placeholder="Full Name">
+                                <input type="text" id="mgr-phone" placeholder="Phone">
+                                <input type="password" id="mgr-password" placeholder="Password">
+                                <button type="button" class="btn btn-primary btn-sm" id="btn-create-manager">Create</button>
+                                <button type="button" class="btn btn-sm" id="btn-cancel-manager">Cancel</button>
+                            </div>
+                        </div>
+                        <table id="managers-table">
+                            <thead><tr><th>User ID</th><th>Name</th><th>Phone</th><th>Workers</th><th>Created</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="managers-empty">No managers found</p>
+                    </div>
+
+                    <!-- ESCALATIONS -->
+                    <div id="tab-escalations" class="tab">
+                        <div class="tab-header">
+                            <h3>Escalation Reports</h3>
+                            <button type="button" class="btn btn-sm" id="btn-refresh-escalations">Refresh</button>
+                        </div>
+                        <table id="escalations-table">
+                            <thead><tr><th>ID</th><th>Worker</th><th>Severity</th><th>Description</th><th>Status</th><th>Reported</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="escalations-empty">No escalations found</p>
+                    </div>
+
+                    <!-- SITES -->
+                    <div id="tab-sites" class="tab">
+                        <h3>Site Mappings</h3>
+                        <p class="empty-msg">Site mappings created by managers and workers appear here.</p>
+                        <table id="sites-table">
+                            <thead><tr><th>Site ID</th><th>Name</th><th>Recorded By</th><th>Points</th><th>Recorded</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="sites-empty">No sites found</p>
+                    </div>
+
+                    <!-- COMPLIANCE -->
+                    <div id="tab-compliance" class="tab">
+                        <div class="tab-header">
+                            <h3>Safety Compliance</h3>
+                            <button type="button" class="btn btn-sm" id="btn-refresh-compliance">Refresh</button>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="comp-pass-rate">—</div>
+                                <div class="stat-label">Pass Rate %</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="comp-assessments">0</div>
+                                <div class="stat-label">Assessments</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="comp-certificates">0</div>
+                                <div class="stat-label">Certificates</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-number" id="comp-failed">0</div>
+                                <div class="stat-label">Failed Attempts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="comp-attempts-total">0</div>
+                                <div class="stat-label">Training Attempts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="comp-attempts-done">0</div>
+                                <div class="stat-label">Completed Attempts</div>
+                            </div>
+                        </div>
+                        <h4>By Module</h4>
+                        <table id="comp-modules-table">
+                            <thead><tr><th>Module</th><th>Attempts</th><th>Passed</th><th>Avg Score</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="comp-modules-empty">No assessment data yet</p>
+                        <hr>
+                        <h4>Recent Certificates</h4>
+                        <table id="comp-certs-table">
+                            <thead><tr><th>Certificate</th><th>Employee</th><th>Module</th><th>Score</th><th>Issued</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="comp-certs-empty">No certificates issued</p>
+                        <hr>
+                        <h4>Recent Assessments</h4>
+                        <table id="comp-attempts-table">
+                            <thead><tr><th>Employee</th><th>Module</th><th>Actions</th><th>Questions</th><th>Total</th><th>Result</th><th>Submitted</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="comp-attempts-empty">No assessments submitted</p>
+                        <p class="empty-msg" style="margin-top:12px">Public certificate verify: <a href="/verify/" style="color:var(--primary)">/verify/</a></p>
+                    </div>
+
+                    <!-- CERTIFICATES -->
+                    <div id="tab-certificates" class="tab">
+                        <div class="tab-header">
+                            <h3>Certificates</h3>
+                            <div class="form-row">
+                                <input type="search" id="cert-filter" placeholder="Filter by employee, module, ID…">
+                                <button type="button" class="btn btn-sm" id="btn-refresh-certificates">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="cert-count">0</div>
+                                <div class="stat-label">Issued</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="cert-avg-score">—</div>
+                                <div class="stat-label">Avg Score</div>
+                            </div>
+                        </div>
+                        <table id="certificates-table">
+                            <thead>
+                                <tr>
+                                    <th>Certificate</th>
+                                    <th>Employee</th>
+                                    <th>Module</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Issued</th>
+                                    <th>Tx</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="certificates-empty">No certificates issued</p>
+                    </div>
+
+                    <!-- ATTEMPTS -->
+                    <div id="tab-attempts" class="tab">
+                        <div class="tab-header">
+                            <h3>Attempts</h3>
+                            <div class="form-row">
+                                <select id="attempt-type-filter">
+                                    <option value="">All types</option>
+                                    <option value="training">Training</option>
+                                    <option value="assessment">Assessment</option>
+                                </select>
+                                <input type="search" id="attempt-filter" placeholder="Filter employee / module…">
+                                <button type="button" class="btn btn-sm" id="btn-refresh-attempts">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="att-total">0</div>
+                                <div class="stat-label">Total Rows</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="att-training">0</div>
+                                <div class="stat-label">Training</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="att-assessment">0</div>
+                                <div class="stat-label">Assessments</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-number" id="att-failed">0</div>
+                                <div class="stat-label">Failed / In Progress</div>
+                            </div>
+                        </div>
+                        <table id="attempts-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>ID</th>
+                                    <th>Employee</th>
+                                    <th>Module</th>
+                                    <th>Actions</th>
+                                    <th>Questions</th>
+                                    <th>Total</th>
+                                    <th>Result</th>
+                                    <th>When</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <p class="empty-msg" id="attempts-empty">No attempts found</p>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin/app.js"></script>
+</body>
+</html>

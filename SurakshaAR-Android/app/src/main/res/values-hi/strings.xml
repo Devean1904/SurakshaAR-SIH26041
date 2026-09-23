@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">सुरक्षाAR</string>
+    <string name="login_title">सुरक्षाAR</string>
+    <string name="login_subtitle">खनन सुरक्षा प्रशिक्षण मंच</string>
+    <string name="login_user_id">श्रमिक / प्रशासक आईडी दर्ज करें</string>
+    <string name="login_password">पासवर्ड दर्ज करें</string>
+    <string name="login_button">साइन इन</string>
+    <string name="login_remember">आईडी याद रखें</string>
+    <string name="login_otp_divider">- या -</string>
+    <string name="login_otp_button">OTP से लॉगिन करें</string>
+    <string name="otp_title">OTP सत्यापन</string>
+    <string name="otp_subtitle">अपना पंजीकृत फ़ोन नंबर दर्ज करें</string>
+    <string name="otp_phone_hint">+91 XXXXX XXXXX</string>
+    <string name="otp_send">OTP भेजें</string>
+    <string name="otp_enter_hint">6 अंकों का OTP दर्ज करें</string>
+    <string name="otp_verify">सत्यापित करें और साइन इन करें</string>
+    <string name="otp_back">लॉगिन पर वापस जाएं</string>
+    <string name="lang_select">भाषा चुनें</string>
+    <string name="camera_permission_required">AR प्रशिक्षण के लिए कैमरा अनुमति आवश्यक है</string>
+</resources>

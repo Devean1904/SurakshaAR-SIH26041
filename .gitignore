@@ -1,0 +1,54 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Android / Gradle
+**/.gradle/
+**/build/
+local.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Unity (legacy)
+UnityAR/Library/
+UnityAR/Temp/
+UnityAR/Obj/
+UnityAR/Logs/
+UnityAR/UserSettings/
+UnityAR/Builds/
+UnityAR/*.csproj
+UnityAR/*.sln
+
+# Secrets / local config
+**/appsettings.*.local.json
+**/keys/*.pem
+**/keys/*.key
+**/keys/*.pub
+*.pfx
+*.jks
+*.keystore
+.env
+.env.*
+
+# Build outputs / caches (keep root release APK tracked)
+**/bin/
+**/obj/
+**/build/
+.gradle/
+local.properties
+
+# Reference / scratch (optional local only)
+REF/ASE.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vs/
+*.suo
+*.user

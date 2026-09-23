@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SurakshaAR</string>
+    <string name="login_title">SurakshaAR</string>
+    <string name="login_subtitle">Mining Safety Training Platform</string>
+    <string name="login_user_id">Enter Worker / Admin ID</string>
+    <string name="login_password">Enter Password</string>
+    <string name="login_button">SIGN IN</string>
+    <string name="login_remember">Remember ID</string>
+    <string name="login_otp_divider">- OR -</string>
+    <string name="login_otp_button">Login with OTP</string>
+    <string name="otp_title">OTP Verification</string>
+    <string name="otp_subtitle">Enter your registered phone number</string>
+    <string name="otp_phone_hint">+91 XXXXX XXXXX</string>
+    <string name="otp_send">SEND OTP</string>
+    <string name="otp_enter_hint">Enter 6-digit OTP</string>
+    <string name="otp_verify">VERIFY &amp; SIGN IN</string>
+    <string name="otp_back">Back to Login</string>
+    <string name="lang_select">Select Language</string>
+    <string name="camera_permission_required">Camera permission is required for AR training</string>
+</resources>

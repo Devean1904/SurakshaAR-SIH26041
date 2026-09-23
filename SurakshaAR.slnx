@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/AdminCLI/">
+    <Project Path="AdminCLI/AdminCLI.csproj" />
+  </Folder>
+  <Folder Name="/Backend/">
+    <Project Path="Backend/SurakshaAR.Backend.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/SurakshaAR.Shared.csproj" />
+  </Folder>
+</Solution>
