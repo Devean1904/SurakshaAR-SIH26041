@@ -497,7 +497,7 @@ class DashboardActivity : AppCompatActivity() {
             integrator.initiateScan()
         } catch (e: Exception) {
             Log.e(TAG, "QR scanner failed to launch", e)
-            Toast.makeText(this, "QR scanner unavailable: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, LanguageManager.get("error_try_again"), Toast.LENGTH_SHORT).show()
         }
     }
 

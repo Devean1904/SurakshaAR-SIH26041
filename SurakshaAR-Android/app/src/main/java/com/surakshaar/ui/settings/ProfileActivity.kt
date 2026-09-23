@@ -54,7 +54,7 @@ class ProfileActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.certsLabel)?.text = LanguageManager.get("stat_certs")
         } catch (e: Exception) {
             Log.e(TAG, "ProfileActivity failed", e)
-            Toast.makeText(this, "Profile error: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, LanguageManager.get("error_loading_profile"), Toast.LENGTH_SHORT).show()
             finish()
         }
     }

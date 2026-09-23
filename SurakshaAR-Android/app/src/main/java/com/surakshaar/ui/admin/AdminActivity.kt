@@ -804,7 +804,7 @@ class AdminActivity : AppCompatActivity() {
                 contentFrame.addView(managerHeader)
 
                 if (allManagers.isEmpty()) {
-                    showEmpty("No managers registered yet")
+                    showEmpty(LanguageManager.get("no_managers_registered"))
                     return@launch
                 }
 
